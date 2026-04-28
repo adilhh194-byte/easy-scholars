@@ -1,13 +1,26 @@
 'use client';
 
 import { useState } from 'react';
-import { Database, Upload, CheckCircle, AlertCircle, RefreshCw } from 'lucide-react';
+import { Database, Upload, CheckCircle, AlertCircle, RefreshCw, ShieldAlert } from 'lucide-react';
 import { seedScholarships } from '@/lib/scholarships';
 import { MOCK_SCHOLARSHIPS } from '@/lib/mock-data';
 
 export default function AdminPage() {
   const [status, setStatus] = useState<{ success: boolean; message: string } | null>(null);
   const [loading, setLoading] = useState(false);
+
+  // Block access in production
+  if (process.env.NODE_ENV === 'production') {
+    return (
+      <div className="page-container py-20 text-center">
+        <div className="w-16 h-16 rounded-2xl bg-red-100 dark:bg-red-900/20 flex items-center justify-center mx-auto mb-4">
+          <ShieldAlert className="w-7 h-7 text-red-500" />
+        </div>
+        <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-200 mb-2">Access Denied</h1>
+        <p className="text-slate-500 dark:text-slate-400">Admin panel is only available in development mode.</p>
+      </div>
+    );
+  }
 
   const handleSeed = async () => {
     setLoading(true);

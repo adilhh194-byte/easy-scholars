@@ -15,12 +15,37 @@ export async function generateMetadata({ params }: ScholarshipDetailPageProps): 
   if (!scholarship) {
     return { title: 'Scholarship Not Found' };
   }
+
+  const deadlineFormatted = new Date(scholarship.deadline).toLocaleDateString('en-US', {
+    year: 'numeric', month: 'long', day: 'numeric',
+  });
+  const degreeLevels = scholarship.degreeLevel.join(', ');
+  const seoTitle = `${scholarship.title} | ${scholarship.fundingType} ${scholarship.country} Scholarship ${new Date(scholarship.deadline).getFullYear()}`;
+  const seoDescription = `Apply for ${scholarship.title} at ${scholarship.university}. ${scholarship.fundingType} ${degreeLevels} scholarship in ${scholarship.country}. Deadline: ${deadlineFormatted}. Eligibility, benefits, requirements & full application guide.`;
+
   return {
-    title: scholarship.title,
-    description: `${scholarship.title} at ${scholarship.university}. ${scholarship.fundingType} scholarship in ${scholarship.country}. Deadline: ${scholarship.deadline}.`,
+    title: seoTitle,
+    description: seoDescription,
+    keywords: [
+      scholarship.title,
+      `${scholarship.country} scholarship`,
+      `${scholarship.fundingType} scholarship`,
+      ...scholarship.degreeLevel.map(d => `${d} scholarship`),
+      scholarship.university,
+      'study abroad',
+      'international scholarship',
+      ...scholarship.tags,
+    ],
     openGraph: {
-      title: `${scholarship.title} | EasyScholars`,
-      description: `${scholarship.fundingType} scholarship at ${scholarship.university} in ${scholarship.country}.`,
+      title: seoTitle,
+      description: seoDescription,
+      type: 'article',
+      siteName: 'EasyScholars',
+    },
+    twitter: {
+      card: 'summary',
+      title: seoTitle,
+      description: seoDescription,
     },
   };
 }

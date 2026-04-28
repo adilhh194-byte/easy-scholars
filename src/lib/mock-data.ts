@@ -1,6 +1,10 @@
 import { Scholarship, Category, Guide } from '@/types';
+import { expand } from './scholarship-factory';
+import { BATCH1 } from './data-batch1';
+import { BATCH2 } from './data-batch2';
+import { BATCH3 } from './data-batch3';
 
-export const MOCK_SCHOLARSHIPS: Scholarship[] = [
+const ORIGINAL_SCHOLARSHIPS: Scholarship[] = [
   {
     id: '1',
     title: 'Chevening Scholarships',
@@ -432,13 +436,20 @@ export const MOCK_SCHOLARSHIPS: Scholarship[] = [
   },
 ];
 
+export const MOCK_SCHOLARSHIPS: Scholarship[] = [
+  ...ORIGINAL_SCHOLARSHIPS,
+  ...BATCH1.map(expand),
+  ...BATCH2.map(expand),
+  ...BATCH3.map(expand),
+];
+
 export const MOCK_CATEGORIES: Category[] = [
-  { id: '1', label: 'Government', icon: '🏛️', count: 7, description: 'Scholarships funded by national governments worldwide' },
-  { id: '2', label: 'University', icon: '🎓', count: 3, description: 'Awards directly from top universities' },
-  { id: '3', label: 'STEM', icon: '🔬', count: 5, description: 'Science, Technology, Engineering & Math scholarships' },
-  { id: '4', label: 'Arts & Humanities', icon: '🎨', count: 4, description: 'Scholarships for arts, literature, and social sciences' },
-  { id: '5', label: 'Foundation', icon: '🤝', count: 2, description: 'Privately funded foundation scholarships' },
-  { id: '6', label: 'EU Programme', icon: '🇪🇺', count: 2, description: 'European Union funded programmes' },
+  { id: '1', label: 'Government', icon: '🏛️', count: 22, description: 'Scholarships funded by national governments worldwide' },
+  { id: '2', label: 'University', icon: '🎓', count: 16, description: 'Awards directly from top universities' },
+  { id: '3', label: 'STEM', icon: '🔬', count: 12, description: 'Science, Technology, Engineering & Math scholarships' },
+  { id: '4', label: 'Arts & Humanities', icon: '🎨', count: 8, description: 'Scholarships for arts, literature, and social sciences' },
+  { id: '5', label: 'Foundation', icon: '🤝', count: 7, description: 'Privately funded foundation scholarships' },
+  { id: '6', label: 'EU Programme', icon: '🇪🇺', count: 3, description: 'European Union funded programmes' },
 ];
 
 export const MOCK_GUIDES: Guide[] = [

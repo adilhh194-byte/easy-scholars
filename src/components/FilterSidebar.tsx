@@ -5,7 +5,7 @@ import { ChevronDown, ChevronUp, SlidersHorizontal, X } from 'lucide-react';
 import { DegreeLevel, FundingType, ScholarshipFilters } from '@/types';
 import { cn } from '@/lib/utils';
 
-const COUNTRIES = ['United Kingdom', 'United States', 'Germany', 'Australia', 'Switzerland', 'European Union', 'Sweden', 'South Korea', 'Japan', 'Multiple'];
+const COUNTRIES = ['United Kingdom', 'United States', 'Germany', 'Australia', 'Switzerland', 'European Union', 'Sweden', 'South Korea', 'Japan', 'Canada', 'China', 'France', 'Turkey', 'Hungary', 'New Zealand', 'Netherlands', 'Italy', 'Singapore', 'Belgium', 'Austria', 'Mexico', 'Russia', 'Brunei', 'Multiple'];
 const DEGREE_LEVELS: DegreeLevel[] = ['Bachelor', 'Master', 'PhD', 'Postdoc', 'Any'];
 const FUNDING_TYPES: FundingType[] = ['Fully Funded', 'Partial', 'Stipend', 'Tuition Only'];
 const DEADLINES = [
