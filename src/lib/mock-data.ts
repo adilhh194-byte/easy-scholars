@@ -3,6 +3,7 @@ import { expand } from './scholarship-factory';
 import { BATCH1 } from './data-batch1';
 import { BATCH2 } from './data-batch2';
 import { BATCH3 } from './data-batch3';
+import { BATCH_RUSSIA } from './data-russia';
 
 /** Fill missing new fields with defaults derived from existing data */
 function migrateScholarship(s: Partial<Scholarship> & { id: string; title: string; applyUrl: string }): Scholarship {
@@ -477,6 +478,7 @@ export const MOCK_SCHOLARSHIPS: Scholarship[] = [
   ...BATCH1.map(expand),
   ...BATCH2.map(expand),
   ...BATCH3.map(expand),
+  ...BATCH_RUSSIA.map(expand),
 ];
 
 export const MOCK_CATEGORIES: Category[] = [
