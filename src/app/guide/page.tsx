@@ -15,7 +15,7 @@ export default async function GuidePage() {
   return (
     <>
       {/* Hero */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-violet-600 via-purple-600 to-primary-700">
+      <section className="relative overflow-hidden bg-gradient-to-br from-slate-600 via-slate-600 to-primary-700">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDM0djItSDI0di0yaDEyek0zNiAyNHYySDI0di0yaDEyeiIvPjwvZz48L2c+PC9zdmc+')] opacity-50" />
         <div className="absolute top-10 right-20 w-72 h-72 bg-white/5 rounded-full blur-3xl" />
 
@@ -25,7 +25,7 @@ export default async function GuidePage() {
             <span className="text-sm text-white/90 font-medium">Free comprehensive guide</span>
           </div>
 
-          <h1 className="text-4xl sm:text-5xl font-black text-white tracking-tight mb-4">
+          <h1 className="text-4xl sm:text-5xl font-semibold text-white tracking-tight mb-4">
             Your Scholarship
             <span className="block text-transparent bg-clip-text bg-gradient-to-r from-amber-200 to-yellow-100">
               Success Guide
@@ -44,7 +44,7 @@ export default async function GuidePage() {
               { num: '45 min', label: 'Total Read Time' },
             ].map(stat => (
               <div key={stat.label} className="text-center">
-                <p className="text-2xl font-black text-white">{stat.num}</p>
+                <p className="text-2xl font-semibold text-white">{stat.num}</p>
                 <p className="text-xs text-white/60 uppercase tracking-wider font-medium">{stat.label}</p>
               </div>
             ))}
@@ -70,7 +70,7 @@ export default async function GuidePage() {
               className="card p-5 hover:shadow-card-hover transition-all hover:-translate-y-0.5 group"
             >
               <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-100 to-violet-100 dark:from-primary-900/30 dark:to-violet-900/30 flex items-center justify-center text-xl">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-100 to-slate-100 dark:from-primary-900/30 dark:to-slate-900/30 flex items-center justify-center text-xl">
                   {guide.icon}
                 </div>
                 <span className="text-xs font-bold text-primary-600 dark:text-primary-400 uppercase tracking-widest">
@@ -98,7 +98,7 @@ export default async function GuidePage() {
 
         {/* CTA */}
         <div className="max-w-3xl mx-auto mt-16 text-center">
-          <div className="card p-8 sm:p-10 bg-gradient-to-br from-primary-50 to-violet-50 dark:from-primary-900/10 dark:to-violet-900/10 border-primary-200 dark:border-primary-800">
+          <div className="card p-8 sm:p-10 bg-gradient-to-br from-primary-50 to-slate-50 dark:from-primary-900/10 dark:to-slate-900/10 border-primary-200 dark:border-primary-800">
             <GraduationCap className="w-10 h-10 text-primary-600 dark:text-primary-400 mx-auto mb-4" />
             <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-3">
               Ready to Apply?

@@ -35,11 +35,11 @@ export default function AdminPage() {
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="flex items-center gap-3 mb-8">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-violet-600 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-slate-600 flex items-center justify-center">
             <Database className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h1 className="text-2xl font-black text-slate-900 dark:text-slate-100">Admin Panel</h1>
+            <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">Admin Panel</h1>
             <p className="text-sm text-slate-500 dark:text-slate-400">Manage scholarship data and seed Firestore</p>
           </div>
         </div>

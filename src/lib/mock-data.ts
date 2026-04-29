@@ -4,7 +4,43 @@ import { BATCH1 } from './data-batch1';
 import { BATCH2 } from './data-batch2';
 import { BATCH3 } from './data-batch3';
 
-const ORIGINAL_SCHOLARSHIPS: Scholarship[] = [
+/** Fill missing new fields with defaults derived from existing data */
+function migrateScholarship(s: Partial<Scholarship> & { id: string; title: string; applyUrl: string }): Scholarship {
+  return {
+    ...s,
+    officialName: s.officialName,
+    university: s.university ?? '',
+    country: s.country ?? '',
+    countryCode: s.countryCode ?? '🌍',
+    degreeLevel: s.degreeLevel ?? [],
+    fundingType: s.fundingType ?? 'Fully Funded',
+    deadline: s.deadline ?? '',
+    isDeadlineEstimated: s.isDeadlineEstimated,
+    description: s.description ?? '',
+    eligibility: s.eligibility ?? [],
+    benefits: s.benefits ?? [],
+    coverageDetails: s.coverageDetails ?? s.benefits ?? [],
+    requirements: s.requirements ?? [],
+    requiredDocuments: s.requiredDocuments ?? s.requirements ?? [],
+    applicationProcess: s.applicationProcess ?? [],
+    selectionCriteria: s.selectionCriteria ?? [],
+    applicationTips: s.applicationTips ?? [],
+    languageRequirements: s.languageRequirements,
+    eligibleCountries: s.eligibleCountries,
+    ineligibleCountries: s.ineligibleCountries,
+    applyUrl: s.applyUrl,
+    officialSourceUrl: s.officialSourceUrl ?? s.applyUrl,
+    lastVerified: s.lastVerified ?? '2024-01-01',
+    sourceNotes: s.sourceNotes ?? 'Data pending verification from official source.',
+    featured: s.featured ?? false,
+    tags: s.tags ?? [],
+    hostCountry: s.hostCountry ?? s.country ?? '',
+    category: s.category ?? '',
+    createdAt: s.createdAt ?? '',
+  } as Scholarship;
+}
+
+const ORIGINAL_SCHOLARSHIPS: Array<Partial<Scholarship> & { id: string; title: string; applyUrl: string }> = [
   {
     id: '1',
     title: 'Chevening Scholarships',
@@ -437,7 +473,7 @@ const ORIGINAL_SCHOLARSHIPS: Scholarship[] = [
 ];
 
 export const MOCK_SCHOLARSHIPS: Scholarship[] = [
-  ...ORIGINAL_SCHOLARSHIPS,
+  ...ORIGINAL_SCHOLARSHIPS.map(s => migrateScholarship(s as any)),
   ...BATCH1.map(expand),
   ...BATCH2.map(expand),
   ...BATCH3.map(expand),

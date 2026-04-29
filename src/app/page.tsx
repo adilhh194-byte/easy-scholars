@@ -17,12 +17,12 @@ export default async function HomePage() {
       {/* ─── Hero Section ─────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden">
         {/* Background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary-600 via-violet-600 to-purple-700 animate-gradient-x" />
+        <div className="absolute inset-0 bg-gradient-to-br from-primary-600 via-slate-600 to-slate-700 animate-gradient-x" />
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDM0djItSDI0di0yaDEyek0zNiAyNHYySDI0di0yaDEyeiIvPjwvZz48L2c+PC9zdmc+')] opacity-50" />
 
         {/* Floating decorative elements */}
         <div className="absolute top-20 left-10 w-72 h-72 bg-white/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-10 right-10 w-96 h-96 bg-violet-400/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-10 right-10 w-96 h-96 bg-slate-400/10 rounded-full blur-3xl" />
 
         <div className="relative page-container py-20 sm:py-28 lg:py-36">
           <div className="max-w-3xl mx-auto text-center">
@@ -33,7 +33,7 @@ export default async function HomePage() {
             </div>
 
             {/* Headline */}
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-tight mb-5 tracking-tight">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-semibold text-white leading-tight mb-5 tracking-tight">
               Your Gateway to
               <span className="block text-transparent bg-clip-text bg-gradient-to-r from-amber-200 to-yellow-100">
                 Global Scholarships
@@ -127,8 +127,8 @@ export default async function HomePage() {
         <div className="flex items-end justify-between mb-8">
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <Sparkles className="w-5 h-5 text-violet-500" />
-              <span className="text-sm font-semibold text-violet-600 dark:text-violet-400 uppercase tracking-wider">Latest</span>
+              <Sparkles className="w-5 h-5 text-slate-500" />
+              <span className="text-sm font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Latest</span>
             </div>
             <h2 className="section-title">Recently Added</h2>
             <p className="section-subtitle">The newest scholarship opportunities from around the world</p>
@@ -147,12 +147,12 @@ export default async function HomePage() {
 
       {/* ─── CTA Section ─────────────────────────────────────────────────── */}
       <section className="page-container pb-20">
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary-600 via-violet-600 to-purple-700 p-10 sm:p-16 text-center">
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary-600 via-slate-600 to-slate-700 p-10 sm:p-16 text-center">
           <div className="absolute top-0 right-0 w-72 h-72 bg-white/5 rounded-full blur-3xl -translate-y-1/3 translate-x-1/3" />
-          <div className="absolute bottom-0 left-0 w-64 h-64 bg-violet-400/10 rounded-full blur-3xl translate-y-1/3 -translate-x-1/3" />
+          <div className="absolute bottom-0 left-0 w-64 h-64 bg-slate-400/10 rounded-full blur-3xl translate-y-1/3 -translate-x-1/3" />
 
           <div className="relative">
-            <h2 className="text-3xl sm:text-4xl font-black text-white mb-4 tracking-tight">
+            <h2 className="text-3xl sm:text-4xl font-semibold text-white mb-4 tracking-tight">
               Ready to Start Your Journey?
             </h2>
             <p className="text-white/80 max-w-lg mx-auto mb-8 text-lg font-light">

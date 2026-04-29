@@ -103,7 +103,7 @@ export default function GuideSteps({ guide }: GuideStepsProps) {
     <div>
       {/* Guide header */}
       <div className="flex items-center gap-3 mb-6">
-        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary-100 to-violet-100 dark:from-primary-900/30 dark:to-violet-900/30 flex items-center justify-center text-2xl shadow-sm">
+        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary-100 to-slate-100 dark:from-primary-900/30 dark:to-slate-900/30 flex items-center justify-center text-2xl shadow-sm">
           {guide.icon}
         </div>
         <div>
@@ -116,7 +116,7 @@ export default function GuideSteps({ guide }: GuideStepsProps) {
       <div className="flex items-center gap-3 mb-6 p-4 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800">
         <div className="flex-1 bg-slate-200 dark:bg-slate-700 rounded-full h-2 overflow-hidden">
           <div
-            className="h-full bg-gradient-to-r from-primary-500 to-violet-500 rounded-full transition-all"
+            className="h-full bg-gradient-to-r from-primary-500 to-slate-500 rounded-full transition-all"
             style={{ width: openIndex !== null ? `${((openIndex + 1) / guide.lessons.length) * 100}%` : '0%' }}
           />
         </div>

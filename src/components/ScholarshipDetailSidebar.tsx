@@ -73,7 +73,7 @@ export default function ScholarshipDetailSidebar({ scholarship }: ScholarshipDet
             'w-full flex items-center justify-center gap-2 rounded-xl py-3.5 font-semibold text-sm transition-all shadow-sm hover:shadow-md',
             urgency === 'expired'
               ? 'bg-slate-200 dark:bg-slate-800 text-slate-400 cursor-not-allowed pointer-events-none'
-              : 'bg-gradient-to-r from-primary-600 to-violet-600 hover:from-primary-700 hover:to-violet-700 text-white'
+              : 'bg-gradient-to-r from-primary-600 to-slate-600 hover:from-primary-700 hover:to-slate-700 text-white'
           )}
         >
           <ExternalLink className="w-4 h-4" />

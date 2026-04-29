@@ -14,7 +14,7 @@ export default function CategoryCard({ category }: CategoryCardProps) {
       className="group relative bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-card hover:shadow-card-hover p-5 flex flex-col items-start gap-3 transition-all duration-300 hover:-translate-y-1 overflow-hidden"
     >
       {/* Decorative gradient on hover */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary-50/0 to-violet-50/0 group-hover:from-primary-50 group-hover:to-violet-50 dark:group-hover:from-primary-900/10 dark:group-hover:to-violet-900/10 transition-all duration-300 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-br from-primary-50/0 to-slate-50/0 group-hover:from-primary-50 group-hover:to-slate-50 dark:group-hover:from-primary-900/10 dark:group-hover:to-slate-900/10 transition-all duration-300 pointer-events-none" />
 
       {/* Icon */}
       <div className="relative w-12 h-12 rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-700 flex items-center justify-center text-2xl shadow-sm group-hover:scale-110 transition-transform duration-300">

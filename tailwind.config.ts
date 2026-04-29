@@ -10,16 +10,16 @@ module.exports = {
     extend: {
       colors: {
         primary: {
-          50: '#eef2ff',
-          100: '#e0e7ff',
-          200: '#c7d2fe',
-          300: '#a5b4fc',
-          400: '#818cf8',
-          500: '#6366f1',
-          600: '#4f46e5',
-          700: '#4338ca',
-          800: '#3730a3',
-          900: '#312e81',
+          50: '#F8FAFC',
+          100: '#F1F5F9',
+          200: '#E2E8F0',
+          300: '#CBD5E1',
+          400: '#94A3B8',
+          500: '#64748B',
+          600: '#475569',
+          700: '#334155',
+          800: '#1E293B',
+          900: '#0F172A',
         },
         surface: {
           light: '#ffffff',
@@ -30,8 +30,8 @@ module.exports = {
         sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
       },
       boxShadow: {
-        'card': '0 2px 8px 0 rgba(0,0,0,0.07), 0 0 1px 0 rgba(0,0,0,0.05)',
-        'card-hover': '0 8px 24px 0 rgba(0,0,0,0.12), 0 0 1px 0 rgba(0,0,0,0.08)',
+        'card': '0 1px 3px 0 rgba(0,0,0,0.06), 0 0 1px 0 rgba(0,0,0,0.04)',
+        'card-hover': '0 4px 12px 0 rgba(0,0,0,0.08), 0 0 1px 0 rgba(0,0,0,0.06)',
       },
       animation: {
         'fade-in': 'fadeIn 0.3s ease-in-out',

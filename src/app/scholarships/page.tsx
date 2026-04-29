@@ -37,7 +37,7 @@ function ScholarshipsContent() {
     <div className="page-container py-8 sm:py-12">
       {/* Page header */}
       <div className="mb-8">
-        <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-slate-100 tracking-tight mb-3">
+        <h1 className="text-3xl sm:text-4xl font-semibold text-slate-900 dark:text-slate-100 tracking-tight mb-3">
           Browse Scholarships
         </h1>
         <p className="text-slate-500 dark:text-slate-400 max-w-2xl">

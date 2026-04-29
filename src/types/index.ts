@@ -4,18 +4,31 @@ export type FundingType = 'Fully Funded' | 'Partial' | 'Stipend' | 'Tuition Only
 export interface Scholarship {
   id: string;
   title: string;
+  officialName?: string;
   university: string;
   country: string;
-  countryCode: string; // emoji flag or ISO code
+  countryCode: string; // emoji flag
   degreeLevel: DegreeLevel[];
   fundingType: FundingType;
   deadline: string; // ISO date string
+  isDeadlineEstimated?: boolean;
   description: string;
   eligibility: string[];
   benefits: string[];
-  requirements: string[];
+  coverageDetails: string[];
+  requirements: string[]; // kept for backward compat
+  requiredDocuments: string[];
+  applicationProcess: string[];
+  selectionCriteria: string[];
+  applicationTips: string[];
+  languageRequirements?: string[];
+  eligibleCountries?: string[];
+  ineligibleCountries?: string[];
   imageUrl?: string;
   applyUrl: string;
+  officialSourceUrl: string;
+  lastVerified: string; // ISO date string
+  sourceNotes?: string;
   featured: boolean;
   tags: string[];
   hostCountry: string;

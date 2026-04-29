@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
   --font-inter: 'Inter', system-ui, sans-serif;
@@ -14,8 +14,9 @@
   }
 
   body {
-    @apply bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 antialiased;
+    @apply bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-200 antialiased;
     font-family: var(--font-inter);
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
   }
 
   * {
@@ -23,10 +24,9 @@
   }
 
   ::selection {
-    @apply bg-primary-200 dark:bg-primary-800 text-primary-900 dark:text-primary-100;
+    @apply bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-slate-100;
   }
 
-  /* Scrollbar styling */
   ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
@@ -44,43 +44,32 @@
 
 @layer components {
   .section-title {
-    @apply text-2xl sm:text-3xl font-bold text-slate-900 dark:text-slate-100;
+    @apply text-2xl sm:text-3xl font-semibold text-slate-900 dark:text-slate-100 tracking-tight;
   }
 
   .section-subtitle {
-    @apply text-slate-500 dark:text-slate-400 mt-2;
+    @apply text-slate-500 dark:text-slate-400 mt-2 leading-relaxed;
   }
 
   .badge {
-    @apply inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full;
+    @apply inline-flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-full;
   }
 
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-xl px-5 py-2.5 transition-all shadow-sm hover:shadow-md text-sm;
+    @apply inline-flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-900 dark:bg-slate-200 dark:hover:bg-slate-100 dark:text-slate-900 text-white font-medium rounded-xl px-5 py-2.5 transition-all text-sm;
   }
 
   .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold rounded-xl px-5 py-2.5 border border-slate-200 dark:border-slate-700 transition-all shadow-sm text-sm;
+    @apply inline-flex items-center justify-center gap-2 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 font-medium rounded-xl px-5 py-2.5 border border-slate-200 dark:border-slate-700 transition-all text-sm;
   }
 
   .card {
-    @apply bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-card;
+    @apply bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-card;
   }
 
   .page-container {
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   }
-}
-
-/* Hero gradient animation */
-@keyframes gradient-x {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-}
-
-.animate-gradient-x {
-  background-size: 200% 200%;
-  animation: gradient-x 6s ease infinite;
 }
 
 /* Prose */

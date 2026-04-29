@@ -27,10 +27,10 @@ export default function Footer() {
           {/* Brand */}
           <div className="md:col-span-2">
             <Link href="/" className="flex items-center gap-2.5 font-bold text-xl mb-4">
-              <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-primary-500 to-violet-600 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-primary-500 to-slate-600 flex items-center justify-center">
                 <GraduationCap className="w-5 h-5 text-white" />
               </div>
-              <span className="bg-gradient-to-r from-primary-400 to-violet-400 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-primary-400 to-slate-400 bg-clip-text text-transparent">
                 EasyScholars
               </span>
             </Link>

@@ -28,10 +28,10 @@ export default function Navbar() {
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2.5 font-bold text-xl group">
-          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-primary-500 to-violet-600 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-primary-500 to-slate-600 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
             <GraduationCap className="w-5 h-5 text-white" />
           </div>
-          <span className="bg-gradient-to-r from-primary-600 to-violet-600 bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-primary-600 to-slate-600 bg-clip-text text-transparent">
             EasyScholars
           </span>
         </Link>
