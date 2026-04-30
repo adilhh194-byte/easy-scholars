@@ -76,7 +76,7 @@ export default function FilterSidebar({ filters, onChange, className }: FilterSi
                 name="country"
                 checked={filters.country === c}
                 onChange={() => onChange({ ...filters, country: filters.country === c ? undefined : c })}
-                className="accent-indigo-600 w-3.5 h-3.5"
+                className="accent-primary-600 w-3.5 h-3.5"
               />
               <span className={cn(
                 'text-sm transition-colors',
@@ -105,7 +105,7 @@ export default function FilterSidebar({ filters, onChange, className }: FilterSi
                 name="degreeLevel"
                 checked={filters.degreeLevel === dl}
                 onChange={() => onChange({ ...filters, degreeLevel: filters.degreeLevel === dl ? undefined : dl })}
-                className="accent-indigo-600 w-3.5 h-3.5"
+                className="accent-primary-600 w-3.5 h-3.5"
               />
               <span className={cn(
                 'text-sm transition-colors',
@@ -134,7 +134,7 @@ export default function FilterSidebar({ filters, onChange, className }: FilterSi
                 name="fundingType"
                 checked={filters.fundingType === ft}
                 onChange={() => onChange({ ...filters, fundingType: filters.fundingType === ft ? undefined : ft })}
-                className="accent-indigo-600 w-3.5 h-3.5"
+                className="accent-primary-600 w-3.5 h-3.5"
               />
               <span className={cn(
                 'text-sm transition-colors',
@@ -163,7 +163,7 @@ export default function FilterSidebar({ filters, onChange, className }: FilterSi
                 name="deadline"
                 checked={filters.deadline === dl.value}
                 onChange={() => onChange({ ...filters, deadline: filters.deadline === dl.value ? undefined : dl.value })}
-                className="accent-indigo-600 w-3.5 h-3.5"
+                className="accent-primary-600 w-3.5 h-3.5"
               />
               <span className={cn(
                 'text-sm transition-colors',
