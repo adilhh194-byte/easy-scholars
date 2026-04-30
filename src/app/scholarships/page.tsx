@@ -34,37 +34,35 @@ function ScholarshipsContent() {
   }, [filters]);
 
   return (
-    <div className="page-container py-8 sm:py-12">
+    <div className="page-container py-8 sm:py-10">
       {/* Page header */}
-      <div className="mb-8">
-        <h1 className="text-3xl sm:text-4xl font-semibold text-slate-900 dark:text-slate-100 tracking-tight mb-3">
+      <div className="mb-6">
+        <h1 className="text-2xl sm:text-3xl font-semibold text-slate-900 dark:text-slate-100 tracking-tight mb-2">
           Browse Scholarships
         </h1>
-        <p className="text-slate-500 dark:text-slate-400 max-w-2xl">
-          Explore {scholarships.length} international scholarships. Use filters to find the perfect opportunity for you.
+        <p className="text-sm text-slate-500 dark:text-slate-400">
+          Explore verified international scholarships. Use search and filters to find opportunities.
         </p>
       </div>
 
-      {/* Search + mobile filter row */}
-      <div className="flex items-center gap-3 mb-8">
+      {/* Search bar + mobile filter button row */}
+      <div className="flex items-center gap-3 mb-6">
         <div className="flex-1">
           <SearchBar size="md" initialValue={queryFromURL} />
         </div>
-        <FilterSidebar filters={filters} onChange={setFilters} />
+        {/* Mobile-only filter button — rendered by FilterSidebar internally via md:hidden */}
+        <div className="md:hidden">
+          <FilterSidebar filters={filters} onChange={setFilters} mobileOnly />
+        </div>
       </div>
 
-      {/* Main content */}
+      {/* Content row: results + sidebar */}
       <div className="flex gap-8">
-        {/* Sidebar - desktop only (rendered inside FilterSidebar component) */}
-        <div className="hidden md:block">
-          <FilterSidebar filters={filters} onChange={setFilters} />
-        </div>
-
-        {/* Scholarship grid */}
+        {/* Scholarship results — main area */}
         <div className="flex-1 min-w-0">
           {/* Active filter chips */}
           {Object.entries(filters).some(([k, v]) => v && k !== 'query') && (
-            <div className="flex flex-wrap gap-2 mb-5">
+            <div className="flex flex-wrap gap-2 mb-4">
               {filters.country && (
                 <FilterChip label={`Country: ${filters.country}`} onRemove={() => setFilters(f => ({ ...f, country: undefined }))} />
               )}
@@ -81,7 +79,7 @@ function ScholarshipsContent() {
           )}
 
           {/* Results count */}
-          <div className="flex items-center justify-between mb-5">
+          <div className="mb-4">
             <p className="text-sm text-slate-500 dark:text-slate-400">
               {loading ? 'Loading…' : `${scholarships.length} scholarship${scholarships.length !== 1 ? 's' : ''} found`}
             </p>
@@ -105,13 +103,13 @@ function ScholarshipsContent() {
             </div>
           ) : scholarships.length === 0 ? (
             /* Empty state */
-            <div className="text-center py-20">
-              <div className="w-16 h-16 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center mx-auto mb-4">
-                <SearchIcon className="w-7 h-7 text-slate-400" />
+            <div className="text-center py-16">
+              <div className="w-14 h-14 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center mx-auto mb-4">
+                <SearchIcon className="w-6 h-6 text-slate-400" />
               </div>
-              <h3 className="text-lg font-bold text-slate-800 dark:text-slate-200 mb-2">No scholarships found</h3>
+              <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-200 mb-2">No scholarships found</h3>
               <p className="text-sm text-slate-500 dark:text-slate-400 max-w-md mx-auto">
-                Try adjusting your filters or search query. We have scholarships from 50+ countries across all degree levels.
+                Try adjusting your filters or search query.
               </p>
               <button
                 onClick={() => setFilters({})}
@@ -128,6 +126,11 @@ function ScholarshipsContent() {
               ))}
             </div>
           )}
+        </div>
+
+        {/* Desktop-only filter sidebar — single instance */}
+        <div className="hidden md:block">
+          <FilterSidebar filters={filters} onChange={setFilters} />
         </div>
       </div>
     </div>
@@ -146,10 +149,10 @@ function FilterChip({ label, onRemove }: { label: string; onRemove: () => void }
 export default function ScholarshipsPage() {
   return (
     <Suspense fallback={
-      <div className="page-container py-12">
+      <div className="page-container py-10">
         <div className="animate-pulse space-y-4">
-          <div className="h-10 w-64 bg-slate-200 dark:bg-slate-800 rounded-lg" />
-          <div className="h-5 w-96 bg-slate-200 dark:bg-slate-800 rounded-lg" />
+          <div className="h-8 w-48 bg-slate-200 dark:bg-slate-800 rounded-lg" />
+          <div className="h-4 w-72 bg-slate-200 dark:bg-slate-800 rounded-lg" />
         </div>
       </div>
     }>
