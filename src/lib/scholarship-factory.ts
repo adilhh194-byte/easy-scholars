@@ -24,6 +24,8 @@ interface CompactScholarship {
   lr?: string[]; // languageRequirements
   ec?: string[]; // eligibleCountries
   ic?: string[]; // ineligibleCountries
+  ecn?: string; // eligibilityCountryNotes
+  esu?: string; // eligibilitySourceUrl
   url: string; // applyUrl
   osu: string; // officialSourceUrl
   lv: string; // lastVerified
@@ -36,6 +38,8 @@ interface CompactScholarship {
 }
 
 export function expand(s: CompactScholarship): Scholarship {
+  const hasUncertainDeadline = /pending verification|estimated|varies|not fixed|current cycle/i.test(s.sn ?? '');
+
   return {
     id: s.id,
     title: s.t,
@@ -46,7 +50,7 @@ export function expand(s: CompactScholarship): Scholarship {
     degreeLevel: s.dl,
     fundingType: s.ft,
     deadline: s.d,
-    isDeadlineEstimated: s.ide,
+    isDeadlineEstimated: s.ide ?? (hasUncertainDeadline ? true : undefined),
     description: s.desc,
     eligibility: s.el,
     benefits: s.ben,
@@ -59,6 +63,8 @@ export function expand(s: CompactScholarship): Scholarship {
     languageRequirements: s.lr,
     eligibleCountries: s.ec,
     ineligibleCountries: s.ic,
+    eligibilityCountryNotes: s.ecn,
+    eligibilitySourceUrl: s.esu,
     applyUrl: s.url,
     officialSourceUrl: s.osu,
     lastVerified: s.lv,

@@ -5,14 +5,52 @@ import { Database, Upload, CheckCircle, AlertCircle, RefreshCw, ShieldAlert, XCi
 import { seedScholarships } from '@/lib/scholarships';
 import { MOCK_SCHOLARSHIPS } from '@/lib/mock-data';
 
+function hasText(value: unknown): boolean {
+  return typeof value === 'string' && value.trim().length > 0;
+}
+
+function hasAtLeast(value: unknown, count: number): boolean {
+  return Array.isArray(value) && value.length >= count;
+}
+
+function hasUncertainDeadline(s: typeof MOCK_SCHOLARSHIPS[number]): boolean {
+  return /var(y|ies|iable|ious)|rolling|annual|check|current|cycle|estimated|pending|not fixed/i.test(
+    `${s.deadline} ${s.sourceNotes ?? ''}`
+  );
+}
+
+function getQualityMissing(s: typeof MOCK_SCHOLARSHIPS[number]): string[] {
+  const missing: string[] = [];
+
+  if (!hasText(s.officialSourceUrl)) missing.push('missing official source');
+  if (!hasText(s.applyUrl)) missing.push('missing apply URL');
+  if (!hasText(s.eligibilitySourceUrl)) missing.push('missing eligibility source');
+  if (!hasAtLeast(s.eligibleCountries, 1)) missing.push('missing eligible countries');
+  if (!hasText(s.eligibilityCountryNotes)) missing.push('missing country notes');
+  if (!hasText(s.lastVerified)) missing.push('missing verification date');
+  if (!hasText(s.sourceNotes)) missing.push('missing source notes');
+  if (!hasAtLeast(s.applicationProcess, 3)) missing.push('application steps');
+  if (!hasAtLeast(s.applicationTips, 2)) missing.push('application tips');
+  if (!hasAtLeast(s.coverageDetails, 2)) missing.push('coverage details');
+  if (!hasAtLeast(s.requiredDocuments, 2)) missing.push('required documents');
+  if (hasUncertainDeadline(s) && s.isDeadlineEstimated !== true) missing.push('deadline estimate flag');
+
+  return missing;
+}
+
 function isRichComplete(s: typeof MOCK_SCHOLARSHIPS[number]): boolean {
-  return (
-    (s.eligibility?.length ?? 0) >= 3 &&
-    (s.coverageDetails?.length ?? 0) >= 2 &&
-    (s.requiredDocuments?.length ?? 0) >= 2 &&
-    (s.applicationProcess?.length ?? 0) >= 3 &&
-    (s.applicationTips?.length ?? 0) >= 2 &&
-    !!s.officialSourceUrl
+  return getQualityMissing(s).length === 0;
+}
+
+function StatusBadge({ complete }: { complete: boolean }) {
+  return complete ? (
+    <span className="inline-flex items-center gap-1 text-xs font-medium text-emerald-600 dark:text-emerald-400">
+      <CheckCircle className="w-3 h-3" /> Complete
+    </span>
+  ) : (
+    <span className="inline-flex items-center gap-1 text-xs font-medium text-amber-600 dark:text-amber-400">
+      <AlertCircle className="w-3 h-3" /> Needs review
+    </span>
   );
 }
 
@@ -53,7 +91,10 @@ export default function AdminPage() {
   };
 
   const richCount = MOCK_SCHOLARSHIPS.filter(isRichComplete).length;
-  const sourceCount = MOCK_SCHOLARSHIPS.filter(s => !!s.officialSourceUrl).length;
+  const needsReviewCount = MOCK_SCHOLARSHIPS.length - richCount;
+  const missingEligibleCountriesCount = MOCK_SCHOLARSHIPS.filter(s => (s.eligibleCountries?.length ?? 0) === 0).length;
+  const missingEligibilitySourceCount = MOCK_SCHOLARSHIPS.filter(s => !s.eligibilitySourceUrl).length;
+  const missingOfficialSourceCount = MOCK_SCHOLARSHIPS.filter(s => !s.officialSourceUrl).length;
 
   return (
     <div className="page-container py-12">
@@ -70,18 +111,30 @@ export default function AdminPage() {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-3 gap-4 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mb-8">
           <div className="card p-4">
             <p className="text-2xl font-semibold text-slate-800 dark:text-slate-200">{MOCK_SCHOLARSHIPS.length}</p>
             <p className="text-xs text-slate-500">Total scholarships</p>
           </div>
           <div className="card p-4">
             <p className="text-2xl font-semibold text-emerald-600 dark:text-emerald-400">{richCount}</p>
-            <p className="text-xs text-slate-500">Rich details complete</p>
+            <p className="text-xs text-slate-500">Complete</p>
           </div>
           <div className="card p-4">
-            <p className="text-2xl font-semibold text-slate-600 dark:text-slate-400">{sourceCount}</p>
-            <p className="text-xs text-slate-500">Have official source</p>
+            <p className="text-2xl font-semibold text-amber-600 dark:text-amber-400">{needsReviewCount}</p>
+            <p className="text-xs text-slate-500">Needs review</p>
+          </div>
+          <div className="card p-4">
+            <p className="text-2xl font-semibold text-amber-600 dark:text-amber-400">{missingEligibleCountriesCount}</p>
+            <p className="text-xs text-slate-500">Missing eligible countries</p>
+          </div>
+          <div className="card p-4">
+            <p className="text-2xl font-semibold text-amber-600 dark:text-amber-400">{missingEligibilitySourceCount}</p>
+            <p className="text-xs text-slate-500">Missing eligibility source</p>
+          </div>
+          <div className="card p-4">
+            <p className="text-2xl font-semibold text-amber-600 dark:text-amber-400">{missingOfficialSourceCount}</p>
+            <p className="text-xs text-slate-500">Missing official source</p>
           </div>
         </div>
 
@@ -122,13 +175,22 @@ export default function AdminPage() {
                   <th className="text-left font-medium text-slate-500 px-4 py-2.5 text-xs uppercase tracking-wider">Country</th>
                   <th className="text-left font-medium text-slate-500 px-4 py-2.5 text-xs uppercase tracking-wider">Funding</th>
                   <th className="text-left font-medium text-slate-500 px-4 py-2.5 text-xs uppercase tracking-wider">Deadline</th>
+                  <th className="text-left font-medium text-slate-500 px-4 py-2.5 text-xs uppercase tracking-wider">Status</th>
                   <th className="text-left font-medium text-slate-500 px-4 py-2.5 text-xs uppercase tracking-wider">Source</th>
+                  <th className="text-left font-medium text-slate-500 px-4 py-2.5 text-xs uppercase tracking-wider">Eligible countries present</th>
+                  <th className="text-left font-medium text-slate-500 px-4 py-2.5 text-xs uppercase tracking-wider">Eligibility source present</th>
+                  <th className="text-left font-medium text-slate-500 px-4 py-2.5 text-xs uppercase tracking-wider">Country notes present</th>
                   <th className="text-left font-medium text-slate-500 px-4 py-2.5 text-xs uppercase tracking-wider">Verified</th>
                   <th className="text-left font-medium text-slate-500 px-4 py-2.5 text-xs uppercase tracking-wider">Rich Data</th>
+                  <th className="text-left font-medium text-slate-500 px-4 py-2.5 text-xs uppercase tracking-wider">Review flags</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                {MOCK_SCHOLARSHIPS.map(s => (
+                {MOCK_SCHOLARSHIPS.map(s => {
+                  const missing = getQualityMissing(s);
+                  const complete = missing.length === 0;
+
+                  return (
                   <tr key={s.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/30 transition-colors">
                     <td className="px-4 py-2.5 font-medium text-slate-800 dark:text-slate-200 max-w-[200px] truncate">{s.title}</td>
                     <td className="px-4 py-2.5 text-slate-600 dark:text-slate-400">{s.countryCode} {s.country}</td>
@@ -138,6 +200,7 @@ export default function AdminPage() {
                       }`}>{s.fundingType}</span>
                     </td>
                     <td className="px-4 py-2.5 text-slate-600 dark:text-slate-400 text-xs">{s.deadline}</td>
+                    <td className="px-4 py-2.5"><StatusBadge complete={complete} /></td>
                     <td className="px-4 py-2.5">
                       {s.officialSourceUrl ? (
                         <span className="text-xs font-medium text-emerald-600 dark:text-emerald-400">✓ Yes</span>
@@ -145,10 +208,17 @@ export default function AdminPage() {
                         <span className="text-xs font-medium text-red-500">✗ Missing</span>
                       )}
                     </td>
+                    <td className="px-4 py-2.5"><QualityBadge ok={(s.eligibleCountries?.length ?? 0) > 0} /></td>
+                    <td className="px-4 py-2.5"><QualityBadge ok={!!s.eligibilitySourceUrl} /></td>
+                    <td className="px-4 py-2.5"><QualityBadge ok={!!s.eligibilityCountryNotes} /></td>
                     <td className="px-4 py-2.5 text-xs text-slate-500">{s.lastVerified || '—'}</td>
-                    <td className="px-4 py-2.5"><QualityBadge ok={isRichComplete(s)} /></td>
+                    <td className="px-4 py-2.5"><QualityBadge ok={complete} /></td>
+                    <td className="px-4 py-2.5 text-xs text-slate-500 min-w-[220px]">
+                      {complete ? 'complete' : missing.join(', ')}
+                    </td>
                   </tr>
-                ))}
+                  );
+                })}
               </tbody>
             </table>
           </div>

@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { MapPin, Calendar, Award, Clock, ArrowRight } from 'lucide-react';
+import { MapPin, Award, Clock, ArrowRight, Globe } from 'lucide-react';
 import { Scholarship } from '@/types';
 import { cn, formatDeadline, getDaysUntilDeadline, truncate } from '@/lib/utils';
 
@@ -41,22 +41,34 @@ function DeadlineChip({ deadline }: { deadline: string }) {
   );
 }
 
+function getEligibilityHint(scholarship: Scholarship): string {
+  const eligibleCountries = scholarship.eligibleCountries?.filter(Boolean) ?? [];
+  const hasUniversalEligibility = eligibleCountries.some(country =>
+    ['all countries', 'international students'].includes(country.toLowerCase())
+  );
+
+  if (hasUniversalEligibility) return 'Eligible: All countries';
+  if (eligibleCountries.length > 0) return `Eligible: ${eligibleCountries.length} countries`;
+  return 'Country eligibility varies';
+}
+
 export default function ScholarshipCard({ scholarship, className, variant = 'default' }: ScholarshipCardProps) {
   const isCompact = variant === 'compact';
   const highlights = (scholarship.coverageDetails?.length ? scholarship.coverageDetails : scholarship.benefits)?.slice(0, 2) ?? [];
+  const eligibilityHint = getEligibilityHint(scholarship);
 
   return (
     <Link
       href={`/scholarships/${scholarship.id}`}
       className={cn(
-        'group block bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-card hover:shadow-card-hover transition-all duration-200 hover:-translate-y-0.5 overflow-hidden',
+        'group flex h-full flex-col bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-lg shadow-slate-200/40 dark:shadow-slate-950/20 hover:shadow-xl hover:shadow-slate-300/40 dark:hover:shadow-slate-950/30 transition-all duration-200 hover:-translate-y-1 overflow-hidden',
         className
       )}
     >
-      <div className={cn('p-5', isCompact && 'p-4')}>
+      <div className={cn('flex h-full flex-col p-5', isCompact && 'p-4')}>
         {/* Header row */}
         <div className="flex items-start justify-between gap-3 mb-3">
-          <div className="w-11 h-11 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-xl flex-shrink-0">
+          <div className="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-xl flex-shrink-0 shadow-sm">
             {scholarship.countryCode}
           </div>
           <FundingBadge type={scholarship.fundingType} />
@@ -101,15 +113,20 @@ export default function ScholarshipCard({ scholarship, className, variant = 'def
           {scholarship.degreeLevel.map(level => (
             <span
               key={level}
-              className="text-xs px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-medium"
+              className="text-xs px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-medium"
             >
               {level}
             </span>
           ))}
         </div>
 
+        <div className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 mb-3">
+          <Globe className="w-3.5 h-3.5 flex-shrink-0" />
+          <span>{eligibilityHint}</span>
+        </div>
+
         {/* Footer */}
-        <div className="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-800">
+        <div className="mt-auto flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-800">
           <div className="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
             <MapPin className="w-3.5 h-3.5" />
             {scholarship.country}
@@ -119,7 +136,7 @@ export default function ScholarshipCard({ scholarship, className, variant = 'def
 
         {/* View Details */}
         {!isCompact && (
-          <div className="mt-3 flex items-center gap-1 text-xs font-medium text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-300 transition-colors">
+          <div className="mt-4 flex items-center gap-1 text-xs font-semibold text-slate-500 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-slate-100 transition-colors">
             View Details
             <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
           </div>

@@ -1,45 +1,41 @@
 /**
- * Link verification script for EasyScholars
- * Usage: npx tsx scripts/check-links.ts
+ * Link verification script for EasyScholars.
+ * Usage: npm run check:links
  */
 
-// Use dynamic import to handle the mock-data module
-async function main() {
-  // We need to resolve the path aliases, so let's read the data directly
-  const path = require('path');
-  const fs = require('fs');
-  
-  // Read and parse the compiled data
-  const tsConfigPath = path.resolve(__dirname, '..', 'tsconfig.json');
-  
-  console.log('\n🔗 EasyScholars Link Checker\n');
-  console.log('─'.repeat(60));
+type LinkResult = {
+  title: string;
+  field: 'applyUrl' | 'officialSourceUrl' | 'eligibilitySourceUrl';
+  url: string;
+  status: number | string;
+  result: 'OK' | 'REDIRECT' | 'BROKEN';
+};
 
-  // Import scholarships - we'll use tsx to handle the TS imports
-  let scholarships: Array<{ id: string; title: string; applyUrl: string; officialSourceUrl?: string }>;
-  
+async function main() {
+  console.log('\nEasyScholars Link Checker\n');
+  console.log('-'.repeat(60));
+
+  let scholarships: Array<{
+    id: string;
+    title: string;
+    applyUrl: string;
+    officialSourceUrl?: string;
+    eligibilitySourceUrl?: string;
+  }>;
+
   try {
     const mod = await import('../src/lib/mock-data');
     scholarships = mod.MOCK_SCHOLARSHIPS;
   } catch {
-    console.error('❌ Could not import mock-data. Run with: npx tsx scripts/check-links.ts');
+    console.error('Could not import mock-data. Run with: npm run check:links');
     process.exit(1);
   }
 
-  const results: Array<{
-    title: string;
-    field: string;
-    url: string;
-    status: number | string;
-    result: 'OK' | 'REDIRECT' | 'BROKEN';
-  }> = [];
-
-  async function checkUrl(url: string): Promise<{ status: number | string; result: 'OK' | 'REDIRECT' | 'BROKEN' }> {
+  async function checkUrl(url: string): Promise<Pick<LinkResult, 'status' | 'result'>> {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 10000);
 
     try {
-      // Try HEAD first
       let response = await fetch(url, {
         method: 'HEAD',
         signal: controller.signal,
@@ -52,15 +48,16 @@ async function main() {
         return { status: response.status, result: response.redirected ? 'REDIRECT' : 'OK' };
       }
 
-      // If HEAD fails (some servers don't support it), try GET
       if (response.status === 405 || response.status === 403) {
         const controller2 = new AbortController();
         const timeout2 = setTimeout(() => controller2.abort(), 10000);
+
         response = await fetch(url, {
           method: 'GET',
           signal: controller2.signal,
           redirect: 'follow',
         });
+
         clearTimeout(timeout2);
 
         if (response.ok) {
@@ -71,15 +68,19 @@ async function main() {
       return { status: response.status, result: 'BROKEN' };
     } catch (err: any) {
       clearTimeout(timeout);
+
       if (err.name === 'AbortError') {
         return { status: 'TIMEOUT', result: 'BROKEN' };
       }
+
       return { status: err.code || 'ERROR', result: 'BROKEN' };
     }
   }
 
+  const checks: Array<Omit<LinkResult, 'status' | 'result'>> = [];
+
   for (const s of scholarships) {
-    const urls: Array<{ field: string; url: string }> = [
+    const urls: Array<{ field: LinkResult['field']; url: string }> = [
       { field: 'applyUrl', url: s.applyUrl },
     ];
 
@@ -87,32 +88,56 @@ async function main() {
       urls.push({ field: 'officialSourceUrl', url: s.officialSourceUrl });
     }
 
-    for (const { field, url } of urls) {
-      const { status, result } = await checkUrl(url);
-      const icon = result === 'OK' ? '✅' : result === 'REDIRECT' ? '↪️ ' : '❌';
-      console.log(`${icon} [${String(status).padStart(3)}] ${s.title}`);
-      console.log(`   ${field}: ${url}`);
-      results.push({ title: s.title, field, url, status, result });
+    if (
+      s.eligibilitySourceUrl &&
+      s.eligibilitySourceUrl !== s.applyUrl &&
+      s.eligibilitySourceUrl !== s.officialSourceUrl
+    ) {
+      urls.push({ field: 'eligibilitySourceUrl', url: s.eligibilitySourceUrl });
+    }
+
+    urls.forEach(({ field, url }) => {
+      checks.push({ title: s.title, field, url });
+    });
+  }
+
+  const results: LinkResult[] = [];
+  const concurrency = 8;
+  let index = 0;
+
+  async function worker() {
+    while (index < checks.length) {
+      const current = checks[index++];
+      const { status, result } = await checkUrl(current.url);
+      results.push({ ...current, status, result });
     }
   }
 
-  // Summary
-  const ok = results.filter(r => r.result === 'OK').length;
-  const redirect = results.filter(r => r.result === 'REDIRECT').length;
-  const broken = results.filter(r => r.result === 'BROKEN').length;
+  await Promise.all(Array.from({ length: concurrency }, worker));
 
-  console.log('\n' + '─'.repeat(60));
-  console.log(`\n📊 Summary:`);
+  results.forEach((r) => {
+    console.log(`${r.result} [${String(r.status).padStart(3)}] ${r.title}`);
+    console.log(`   ${r.field}: ${r.url}`);
+  });
+
+  const ok = results.filter((r) => r.result === 'OK').length;
+  const redirect = results.filter((r) => r.result === 'REDIRECT').length;
+  const broken = results.filter((r) => r.result === 'BROKEN').length;
+
+  console.log('\n' + '-'.repeat(60));
+  console.log('\nSummary:');
   console.log(`   Total checked: ${results.length}`);
-  console.log(`   ✅ Working:    ${ok}`);
-  console.log(`   ↪️  Redirects:  ${redirect}`);
-  console.log(`   ❌ Broken:     ${broken}`);
+  console.log(`   Working:       ${ok}`);
+  console.log(`   Redirects:     ${redirect}`);
+  console.log(`   Broken:        ${broken}`);
 
   if (broken > 0) {
-    console.log(`\n⚠️  Broken links:`);
-    results.filter(r => r.result === 'BROKEN').forEach(r => {
-      console.log(`   - ${r.title} (${r.field}): ${r.url} [${r.status}]`);
-    });
+    console.log('\nBroken links:');
+    results
+      .filter((r) => r.result === 'BROKEN')
+      .forEach((r) => {
+        console.log(`   - ${r.title} (${r.field}): ${r.url} [${r.status}]`);
+      });
   }
 
   console.log('');

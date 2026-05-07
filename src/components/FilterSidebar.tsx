@@ -6,6 +6,12 @@ import { DegreeLevel, FundingType, ScholarshipFilters } from '@/types';
 import { cn } from '@/lib/utils';
 
 const COUNTRIES = ['United Kingdom', 'United States', 'Germany', 'Australia', 'Switzerland', 'European Union', 'Sweden', 'South Korea', 'Japan', 'Canada', 'China', 'France', 'Turkey', 'Hungary', 'New Zealand', 'Netherlands', 'Italy', 'Singapore', 'Belgium', 'Austria', 'Mexico', 'Russia', 'Brunei', 'Multiple'];
+const APPLICANT_COUNTRIES = [
+  'Pakistan', 'India', 'Bangladesh', 'Nepal', 'Sri Lanka', 'Afghanistan', 'Indonesia', 'Malaysia', 'Philippines', 'Vietnam',
+  'Thailand', 'China', 'South Korea', 'Japan', 'Turkey', 'Iran', 'Iraq', 'Jordan', 'Egypt', 'Morocco', 'Nigeria', 'Kenya',
+  'Ethiopia', 'Ghana', 'South Africa', 'Tanzania', 'Uganda', 'Rwanda', 'Mexico', 'Colombia', 'Brazil', 'Peru', 'Ukraine',
+  'Georgia', 'Armenia', 'Azerbaijan', 'Kazakhstan', 'Uzbekistan',
+];
 const DEGREE_LEVELS: DegreeLevel[] = ['Bachelor', 'Master', 'PhD', 'Postdoc', 'Any'];
 const FUNDING_TYPES: FundingType[] = ['Fully Funded', 'Partial', 'Stipend', 'Tuition Only'];
 const DEADLINES = [
@@ -31,6 +37,7 @@ interface FilterSidebarProps {
 
 export default function FilterSidebar({ filters, onChange, className, mobileOnly }: FilterSidebarProps) {
   const [sections, setSections] = useState([
+    { label: 'Your Country', key: 'applicantCountry', open: true },
     { label: 'Country', key: 'country', open: true },
     { label: 'Degree Level', key: 'degreeLevel', open: true },
     { label: 'Funding Type', key: 'fundingType', open: true },
@@ -55,6 +62,28 @@ export default function FilterSidebar({ filters, onChange, className, mobileOnly
           <X className="w-3.5 h-3.5" /> Clear All Filters
         </button>
       )}
+
+      {/* Applicant Country */}
+      <FilterAccordion label="Your Country" isOpen={sections.find(s => s.key === 'applicantCountry')?.open ?? true} onToggle={() => toggleSection('applicantCountry')}>
+        <div className="space-y-2">
+          <input
+            type="search"
+            list="applicant-country-options"
+            value={filters.applicantCountry ?? ''}
+            onChange={e => onChange({ ...filters, applicantCountry: e.target.value.trim() || undefined })}
+            placeholder="Type your country"
+            className="w-full h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-600 outline-none focus:border-primary-400 dark:focus:border-primary-500 focus:ring-2 focus:ring-primary-100 dark:focus:ring-primary-900/30"
+          />
+          <datalist id="applicant-country-options">
+            {APPLICANT_COUNTRIES.map(country => (
+              <option key={country} value={country} />
+            ))}
+          </datalist>
+          <p className="text-xs leading-relaxed text-slate-500 dark:text-slate-400">
+            Country eligibility is based on official sources where available. Always confirm before applying.
+          </p>
+        </div>
+      </FilterAccordion>
 
       {/* Country */}
       <FilterAccordion label="Country" isOpen={sections.find(s => s.key === 'country')?.open ?? true} onToggle={() => toggleSection('country')}>

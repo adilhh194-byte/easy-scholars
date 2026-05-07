@@ -24,6 +24,8 @@ export interface Scholarship {
   languageRequirements?: string[];
   eligibleCountries?: string[];
   ineligibleCountries?: string[];
+  eligibilityCountryNotes?: string;
+  eligibilitySourceUrl?: string;
   imageUrl?: string;
   applyUrl: string;
   officialSourceUrl: string;
@@ -61,6 +63,7 @@ export interface Guide {
 
 export interface ScholarshipFilters {
   country?: string;
+  applicantCountry?: string;
   degreeLevel?: DegreeLevel;
   fundingType?: FundingType;
   deadline?: string;

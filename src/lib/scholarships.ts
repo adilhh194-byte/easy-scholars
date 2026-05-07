@@ -115,6 +115,7 @@ function applyFilters(scholarships: Scholarship[], filters?: ScholarshipFilters)
       if (!haystack.includes(q)) return false;
     }
     if (filters.country && s.country !== filters.country) return false;
+    if (filters.applicantCountry && !isEligibleForApplicantCountry(s, filters.applicantCountry)) return false;
     if (filters.degreeLevel && !s.degreeLevel.includes(filters.degreeLevel)) return false;
     if (filters.fundingType && s.fundingType !== filters.fundingType) return false;
     if (filters.deadline) {
@@ -122,4 +123,52 @@ function applyFilters(scholarships: Scholarship[], filters?: ScholarshipFilters)
     }
     return true;
   });
+}
+
+function normalizeCountry(value: string): string {
+  const normalized = value.trim().toLowerCase();
+  const aliases: Record<string, string> = {
+    'turkiye': 'turkey',
+    'türkiye': 'turkey',
+    'viet nam': 'vietnam',
+    'lao pdr': 'laos',
+    'cote d\'ivoire': 'ivory coast',
+    'côte d\'ivoire': 'ivory coast',
+    'united states of america': 'united states',
+    'usa': 'united states',
+    'uk': 'united kingdom',
+  };
+  return aliases[normalized] ?? normalized;
+}
+
+function hasAutomaticEligibilityFallback(notes?: string): boolean {
+  if (!notes) return false;
+  const normalized = notes.toLowerCase();
+  return normalized.includes('eligibility varies')
+    || normalized.includes('country-specific')
+    || normalized.includes('country must be checked')
+    || normalized.includes('must be checked')
+    || normalized.includes('cannot be automatically checked');
+}
+
+function isEligibleForApplicantCountry(s: Scholarship, applicantCountry: string): boolean {
+  const selectedCountry = normalizeCountry(applicantCountry);
+  if (!selectedCountry) return true;
+
+  const eligibleCountries = s.eligibleCountries?.map(normalizeCountry).filter(Boolean) ?? [];
+  const ineligibleCountries = s.ineligibleCountries?.map(normalizeCountry).filter(Boolean) ?? [];
+
+  if (eligibleCountries.length === 0) {
+    return hasAutomaticEligibilityFallback(s.eligibilityCountryNotes);
+  }
+
+  if (eligibleCountries.includes(selectedCountry)) return true;
+  if (eligibleCountries.includes('all countries')) return true;
+  if (eligibleCountries.includes('international students')) return true;
+
+  if (eligibleCountries.includes('all countries except listed exclusions')) {
+    return !ineligibleCountries.includes(selectedCountry);
+  }
+
+  return false;
 }

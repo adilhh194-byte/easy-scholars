@@ -6,6 +6,9 @@ import { BATCH1 } from './data-batch1';
 import { BATCH2 } from './data-batch2';
 import { BATCH3 } from './data-batch3';
 import { BATCH_RUSSIA } from './data-russia';
+import { GOV_BATCH1 } from './data-gov-batch1';
+import { GOV_BATCH2 } from './data-gov-batch2';
+import { GOV_BATCH3 } from './data-gov-batch3';
 
 export const MOCK_SCHOLARSHIPS: Scholarship[] = [
   ...ORIGINAL_12_A,
@@ -14,9 +17,12 @@ export const MOCK_SCHOLARSHIPS: Scholarship[] = [
   ...BATCH2.map(expand),
   ...BATCH3.map(expand),
   ...BATCH_RUSSIA.map(expand),
+  ...GOV_BATCH1.map(expand),
+  ...GOV_BATCH2.map(expand),
+  ...GOV_BATCH3.map(expand),
 ];
 export const MOCK_CATEGORIES: Category[] = [
-  { id: '1', label: 'Government', icon: '🏛️', count: 22, description: 'Scholarships funded by national governments worldwide' },
+  { id: '1', label: 'Government', icon: '🏛️', count: 52, description: 'Scholarships funded by national governments worldwide' },
   { id: '2', label: 'University', icon: '🎓', count: 16, description: 'Awards directly from top universities' },
   { id: '3', label: 'STEM', icon: '🔬', count: 12, description: 'Science, Technology, Engineering & Math scholarships' },
   { id: '4', label: 'Arts & Humanities', icon: '🎨', count: 8, description: 'Scholarships for arts, literature, and social sciences' },

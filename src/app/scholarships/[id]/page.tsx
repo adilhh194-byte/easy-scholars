@@ -9,9 +9,91 @@ import { getScholarshipById, getRelatedScholarships } from '@/lib/scholarships';
 import ScholarshipDetailSidebar from '@/components/ScholarshipDetailSidebar';
 import ScholarshipCard from '@/components/ScholarshipCard';
 import { MOCK_SCHOLARSHIPS } from '@/lib/mock-data';
+import { Scholarship } from '@/types';
 
 interface ScholarshipDetailPageProps {
   params: { id: string };
+}
+
+function isUniversalCountryEligibility(countries: string[]): boolean {
+  return countries.some(country =>
+    ['all countries', 'international students'].includes(country.toLowerCase())
+  );
+}
+
+function hasCountryEligibilityContent(scholarship: Scholarship): boolean {
+  return Boolean(
+    scholarship.eligibleCountries?.filter(Boolean).length
+    || scholarship.ineligibleCountries?.filter(Boolean).length
+    || scholarship.eligibilityCountryNotes
+    || scholarship.eligibilitySourceUrl
+  );
+}
+
+function EligibleCountriesSection({ scholarship }: { scholarship: Scholarship }) {
+  const eligibleCountries = scholarship.eligibleCountries?.filter(Boolean) ?? [];
+  const ineligibleCountries = scholarship.ineligibleCountries?.filter(Boolean) ?? [];
+  const hasUniversalEligibility = isUniversalCountryEligibility(eligibleCountries);
+  const hasSpecificEligibleCountries = eligibleCountries.length > 0 && !hasUniversalEligibility;
+
+  if (!hasCountryEligibilityContent(scholarship)) return null;
+
+  return (
+    <div className="space-y-4">
+      {hasUniversalEligibility && (
+        <span className="inline-flex items-center rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400">
+          Eligible: All countries
+        </span>
+      )}
+
+      {hasSpecificEligibleCountries && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          {eligibleCountries.map(country => (
+            <div
+              key={country}
+              className="rounded-lg border border-slate-200 dark:border-slate-800 px-3 py-2 text-sm text-slate-600 dark:text-slate-400"
+            >
+              {country}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {ineligibleCountries.length > 0 && (
+        <div>
+          <h3 className="text-sm font-medium text-slate-800 dark:text-slate-200 mb-2">Not eligible</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {ineligibleCountries.map(country => (
+              <div
+                key={country}
+                className="rounded-lg border border-red-100 bg-red-50/60 dark:border-red-900/30 dark:bg-red-900/10 px-3 py-2 text-sm text-red-700 dark:text-red-300"
+              >
+                {country}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {scholarship.eligibilityCountryNotes && (
+        <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+          {scholarship.eligibilityCountryNotes}
+        </p>
+      )}
+
+      {scholarship.eligibilitySourceUrl && (
+        <a
+          href={scholarship.eligibilitySourceUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 underline underline-offset-2 transition-colors"
+        >
+          <ExternalLink className="w-3.5 h-3.5" />
+          Country eligibility source
+        </a>
+      )}
+    </div>
+  );
 }
 
 export async function generateMetadata({ params }: ScholarshipDetailPageProps): Promise<Metadata> {
@@ -79,6 +161,9 @@ export default async function ScholarshipDetailPage({ params }: ScholarshipDetai
   const related = await getRelatedScholarships(scholarship, 3);
 
   const coverageData = scholarship.coverageDetails?.length ? scholarship.coverageDetails : scholarship.benefits;
+  const countryEligibilityContent = hasCountryEligibilityContent(scholarship)
+    ? <EligibleCountriesSection scholarship={scholarship} />
+    : null;
 
   const SECTIONS = [
     {
@@ -105,6 +190,12 @@ export default async function ScholarshipDetailPage({ params }: ScholarshipDetai
           ))}
         </ul>
       ) : null,
+    },
+    {
+      id: 'eligible-countries',
+      icon: <Globe className="w-4 h-4" />,
+      title: 'Eligible Countries',
+      content: countryEligibilityContent,
     },
     {
       id: 'coverage',

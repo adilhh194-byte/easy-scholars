@@ -1,83 +1,162 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import {
-  ArrowRight, Globe, GraduationCap, Users, ExternalLink, CheckCircle,
-  Calendar, BookOpen, TrendingUp, Search, FileText, Award, MapPin,
-  ClipboardList, Shield, Sparkles
+  ArrowRight,
+  Award,
+  BookOpen,
+  Calendar,
+  CheckCircle,
+  ClipboardList,
+  ExternalLink,
+  Filter,
+  Globe2,
+  GraduationCap,
+  Landmark,
+  MapPin,
+  Search,
+  ShieldCheck,
+  Sparkles,
 } from 'lucide-react';
 import SearchBar from '@/components/SearchBar';
 import ScholarshipCard from '@/components/ScholarshipCard';
 import CategoryCard from '@/components/CategoryCard';
 import { getFeaturedScholarships, getLatestScholarships, getCategories } from '@/lib/scholarships';
 
-/* ── SVG hero illustration (education-themed, inline) ────────────── */
-function HeroIllustration() {
+const quickFilters = [
+  { label: 'Fully Funded', href: '/scholarships?fundingType=Fully%20Funded', icon: Award, active: true },
+  { label: 'Masters', href: '/scholarships?degreeLevel=Master', icon: GraduationCap },
+  { label: 'PhD', href: '/scholarships?degreeLevel=PhD', icon: BookOpen },
+  { label: 'Government', href: '/scholarships?category=Government', icon: Landmark },
+  { label: 'Russia', href: '/scholarships?country=Russia', icon: MapPin },
+  { label: 'Europe', href: '/scholarships?q=Europe', icon: Globe2 },
+];
+
+const trustFeatures = [
+  {
+    icon: ExternalLink,
+    title: 'Official source links',
+    desc: 'Every record points applicants back to the scholarship provider or official programme page.',
+  },
+  {
+    icon: ShieldCheck,
+    title: 'Clear eligibility',
+    desc: 'Country rules, degree level, documents, and requirements are surfaced before you apply.',
+  },
+  {
+    icon: ClipboardList,
+    title: 'Application guidance',
+    desc: 'Review steps, tips, selection criteria, and document checklists in one focused view.',
+  },
+  {
+    icon: Filter,
+    title: 'Country filters',
+    desc: 'Filter opportunities by destination and applicant-country eligibility where official data exists.',
+  },
+];
+
+function QuickFilterPills() {
   return (
-    <div className="relative w-full max-w-md mx-auto lg:mx-0">
-      {/* Decorative background shapes */}
-      <div className="absolute -top-6 -right-6 w-48 h-48 bg-teal-100/40 dark:bg-teal-900/10 rounded-full blur-2xl" />
-      <div className="absolute -bottom-4 -left-4 w-36 h-36 bg-blue-100/40 dark:bg-blue-900/10 rounded-full blur-2xl" />
-
-      <svg viewBox="0 0 400 360" fill="none" xmlns="http://www.w3.org/2000/svg" className="relative w-full h-auto drop-shadow-sm">
-        {/* Globe */}
-        <circle cx="200" cy="170" r="100" fill="#f1f5f9" stroke="#cbd5e1" strokeWidth="1.5" />
-        <ellipse cx="200" cy="170" rx="60" ry="100" fill="none" stroke="#94a3b8" strokeWidth="1" strokeDasharray="4 3" />
-        <path d="M100 170 Q200 140 300 170" fill="none" stroke="#94a3b8" strokeWidth="1" strokeDasharray="4 3" />
-        <path d="M100 170 Q200 200 300 170" fill="none" stroke="#94a3b8" strokeWidth="1" strokeDasharray="4 3" />
-
-        {/* Continent shapes (simplified) */}
-        <path d="M165 110 Q175 100 185 105 Q195 110 190 120 Q185 130 175 125 Q165 120 165 110Z" fill="#5eead4" opacity="0.6" />
-        <path d="M210 120 Q225 115 235 125 Q240 135 230 140 Q220 145 210 135 Q205 128 210 120Z" fill="#5eead4" opacity="0.5" />
-        <path d="M180 180 Q195 175 205 185 Q210 195 200 200 Q190 205 182 195 Q175 188 180 180Z" fill="#5eead4" opacity="0.4" />
-
-        {/* Graduation cap */}
-        <g transform="translate(280, 60)">
-          <polygon points="0,20 40,0 80,20 40,40" fill="#334155" />
-          <rect x="36" y="20" width="8" height="25" rx="2" fill="#475569" />
-          <circle cx="40" cy="50" r="5" fill="#334155" />
-          <path d="M40 45 L40 30" stroke="#475569" strokeWidth="2" />
-          <path d="M55 22 L70 35" stroke="#fbbf24" strokeWidth="2" strokeLinecap="round" />
-          <circle cx="72" cy="37" r="3" fill="#fbbf24" />
-        </g>
-
-        {/* Book */}
-        <g transform="translate(50, 230)">
-          <rect x="0" y="10" width="70" height="50" rx="4" fill="#e2e8f0" stroke="#cbd5e1" strokeWidth="1" />
-          <rect x="5" y="5" width="70" height="50" rx="4" fill="#f8fafc" stroke="#cbd5e1" strokeWidth="1" />
-          <line x1="40" y1="10" x2="40" y2="50" stroke="#e2e8f0" strokeWidth="1" />
-          <line x1="15" y1="18" x2="35" y2="18" stroke="#94a3b8" strokeWidth="1.5" strokeLinecap="round" />
-          <line x1="15" y1="25" x2="35" y2="25" stroke="#cbd5e1" strokeWidth="1" strokeLinecap="round" />
-          <line x1="15" y1="32" x2="30" y2="32" stroke="#cbd5e1" strokeWidth="1" strokeLinecap="round" />
-          <line x1="47" y1="18" x2="67" y2="18" stroke="#94a3b8" strokeWidth="1.5" strokeLinecap="round" />
-          <line x1="47" y1="25" x2="67" y2="25" stroke="#cbd5e1" strokeWidth="1" strokeLinecap="round" />
-        </g>
-
-        {/* Certificate */}
-        <g transform="translate(260, 220)">
-          <rect x="0" y="0" width="90" height="65" rx="6" fill="#f8fafc" stroke="#cbd5e1" strokeWidth="1.5" />
-          <line x1="15" y1="14" x2="75" y2="14" stroke="#94a3b8" strokeWidth="2" strokeLinecap="round" />
-          <line x1="20" y1="24" x2="70" y2="24" stroke="#e2e8f0" strokeWidth="1" strokeLinecap="round" />
-          <line x1="25" y1="32" x2="65" y2="32" stroke="#e2e8f0" strokeWidth="1" strokeLinecap="round" />
-          <circle cx="45" cy="48" r="8" fill="none" stroke="#fbbf24" strokeWidth="1.5" />
-          <path d="M41 48 L44 51 L50 44" stroke="#fbbf24" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-        </g>
-
-        {/* Location pins on globe */}
-        <g transform="translate(170, 95)">
-          <path d="M5 0 C5 -7 -5 -7 -5 0 C-5 5 5 12 0 16 C-5 12 -15 5 -15 0 C-15 -12 15 -12 15 0 Z" fill="#f87171" opacity="0.8" transform="scale(0.5)" />
-        </g>
-        <g transform="translate(225, 130)">
-          <path d="M5 0 C5 -7 -5 -7 -5 0 C-5 5 5 12 0 16 C-5 12 -15 5 -15 0 C-15 -12 15 -12 15 0 Z" fill="#f87171" opacity="0.8" transform="scale(0.5)" />
-        </g>
-        <g transform="translate(188, 185)">
-          <path d="M5 0 C5 -7 -5 -7 -5 0 C-5 5 5 12 0 16 C-5 12 -15 5 -15 0 C-15 -12 15 -12 15 0 Z" fill="#f87171" opacity="0.8" transform="scale(0.5)" />
-        </g>
-
-        {/* Connecting dots/lines between elements */}
-        <circle cx="150" cy="120" r="2" fill="#5eead4" opacity="0.6" />
-        <circle cx="260" cy="200" r="2" fill="#5eead4" opacity="0.6" />
-        <circle cx="130" cy="220" r="2" fill="#5eead4" opacity="0.6" />
-      </svg>
+    <div className="-mx-4 sm:mx-0 overflow-x-auto px-4 sm:px-0 pb-2">
+      <div className="flex min-w-max items-center gap-3">
+        {quickFilters.map(({ label, href, icon: Icon, active }) => (
+          <Link
+            key={label}
+            href={href}
+            className={
+              active
+                ? 'inline-flex items-center gap-2 rounded-2xl bg-slate-900 px-4 py-3 text-sm font-medium text-white shadow-lg shadow-slate-900/10 dark:bg-slate-100 dark:text-slate-900'
+                : 'inline-flex items-center gap-2 rounded-2xl border border-white/80 bg-white/85 px-4 py-3 text-sm font-medium text-slate-600 shadow-sm backdrop-blur transition-colors hover:text-slate-900 dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-300 dark:hover:text-white'
+            }
+          >
+            <Icon className="h-4 w-4" />
+            {label}
+          </Link>
+        ))}
+      </div>
     </div>
+  );
+}
+
+function HeroVisual() {
+  const statCards = [
+    { label: 'Countries', value: '20+', color: 'bg-orange-400' },
+    { label: 'Scholarships', value: '50+', color: 'bg-blue-500' },
+  ];
+
+  return (
+    <div className="relative mx-auto w-full max-w-xl lg:pt-0">
+      <div className="absolute -left-6 top-10 h-40 w-40 rounded-full bg-cyan-200/25 blur-3xl dark:bg-cyan-900/20 sm:-left-10 sm:top-16 sm:h-56 sm:w-56" />
+      <div className="absolute -right-4 bottom-4 h-44 w-44 rounded-full bg-blue-200/35 blur-3xl dark:bg-blue-950/30 sm:-right-6 sm:h-60 sm:w-60" />
+
+      <div className="relative rounded-[2rem] border border-white/50 bg-white/30 p-4 backdrop-blur-sm dark:border-slate-800/80 dark:bg-slate-900/30 sm:min-h-[500px]">
+        <div className="absolute right-5 top-6 hidden h-[360px] w-[250px] rounded-[1.4rem] border border-white/70 bg-white/35 shadow-xl shadow-slate-300/30 dark:border-slate-700 dark:bg-slate-900/30 sm:block" />
+        <div className="absolute left-6 top-32 hidden h-36 w-36 rounded-[1.5rem] border border-white/70 bg-white/25 shadow-lg shadow-slate-300/20 dark:border-slate-800 dark:bg-slate-900/30 sm:block" />
+
+        <div className="relative mx-auto w-[210px] overflow-hidden rounded-[1.75rem] border-[8px] border-white bg-white shadow-2xl shadow-slate-400/30 dark:border-slate-900 dark:bg-slate-900 sm:mr-24 sm:mt-2 sm:w-[285px] sm:rounded-[2rem] sm:border-[10px]">
+          <Image
+            src="/images/hero-scholar-portrait.jpg"
+            alt="Smiling scholarship applicant"
+            width={288}
+            height={382}
+            priority
+            className="h-auto w-full"
+          />
+        </div>
+
+        <div className="mt-4 grid grid-cols-2 gap-3 sm:absolute sm:right-0 sm:top-24 sm:mt-0 sm:flex sm:w-28 sm:flex-col sm:gap-4">
+          {statCards.map(({ label, value, color }) => (
+            <div key={label} className="rounded-2xl border border-white/80 bg-white p-3 shadow-xl shadow-slate-300/30 dark:border-slate-800 dark:bg-slate-950 sm:p-4">
+              <span className={`mb-2 block h-3.5 w-3.5 rounded-full ${color} sm:mb-3 sm:h-4 sm:w-4`} />
+              <p className="text-lg font-semibold text-slate-900 dark:text-slate-100 sm:text-xl">{value}</p>
+              <p className="text-xs leading-tight text-slate-500 dark:text-slate-400">{label}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="relative mt-4 rounded-[1.5rem] bg-slate-900 p-4 text-white shadow-2xl shadow-slate-400/25 dark:bg-slate-100 dark:text-slate-950 sm:absolute sm:bottom-7 sm:left-6 sm:right-auto sm:mt-0 sm:w-64 sm:p-5">
+          <div className="mb-5 flex items-start justify-between gap-4">
+            <div>
+              <p className="text-sm font-semibold leading-snug">Verified scholarship pathway</p>
+              <p className="mt-2 text-xs leading-relaxed text-slate-300 dark:text-slate-600">
+                Compare official sources, eligibility, and funding before you apply.
+              </p>
+            </div>
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white/15 dark:bg-slate-900/10">
+              <GraduationCap className="h-5 w-5" />
+            </div>
+          </div>
+          <Link href="/scholarships" className="inline-flex items-center gap-2 rounded-full bg-cyan-50 px-4 py-2 text-xs font-semibold text-slate-900 transition-colors hover:bg-white dark:bg-slate-900 dark:text-white dark:hover:bg-slate-800">
+            Start search <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
+        </div>
+
+        <div className="absolute left-6 top-5 flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-lg shadow-slate-300/30 dark:bg-slate-950 sm:left-7 sm:top-6 sm:h-12 sm:w-12">
+          <ShieldCheck className="h-5 w-5 text-blue-500" />
+        </div>
+
+        <div className="absolute bottom-24 right-8 hidden h-12 w-12 items-center justify-center rounded-full bg-white shadow-lg shadow-slate-300/30 dark:bg-slate-950 sm:flex">
+          <BookOpen className="h-5 w-5 text-slate-700 dark:text-slate-200" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function TrustFeatureCards() {
+  return (
+    <section className="page-container py-12 sm:py-16">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {trustFeatures.map(({ icon: Icon, title, desc }) => (
+          <div key={title} className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-lg shadow-slate-200/50 transition-transform hover:-translate-y-0.5 dark:border-slate-800 dark:bg-slate-900 dark:shadow-slate-950/20">
+            <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200">
+              <Icon className="h-5 w-5" />
+            </div>
+            <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">{title}</h3>
+            <p className="mt-2 text-sm leading-relaxed text-slate-500 dark:text-slate-400">{desc}</p>
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }
 
@@ -89,232 +168,169 @@ export default async function HomePage() {
   ]);
 
   return (
-    <>
-      {/* ═══ HERO SECTION ═══════════════════════════════════════════════════ */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-white to-teal-50/30 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900" />
+    <div className="overflow-hidden bg-slate-50 dark:bg-slate-950">
+      <section className="relative">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_10%,rgba(125,211,252,0.22),transparent_30%),radial-gradient(circle_at_85%_20%,rgba(203,213,225,0.55),transparent_28%),linear-gradient(135deg,#f8fafc_0%,#eef6f8_42%,#ffffff_100%)] dark:bg-[radial-gradient(circle_at_15%_10%,rgba(14,116,144,0.18),transparent_30%),radial-gradient(circle_at_85%_20%,rgba(51,65,85,0.45),transparent_28%),linear-gradient(135deg,#020617_0%,#0f172a_50%,#020617_100%)]" />
+        <div className="absolute left-1/2 top-24 h-72 w-72 -translate-x-1/2 rounded-full bg-white/60 blur-3xl dark:bg-slate-800/20" />
 
-        {/* Subtle decorative shapes */}
-        <div className="absolute top-20 left-1/4 w-64 h-64 bg-teal-100/20 dark:bg-teal-900/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-10 right-1/3 w-48 h-48 bg-blue-100/20 dark:bg-blue-900/5 rounded-full blur-3xl" />
-
-        <div className="relative page-container py-16 sm:py-20 lg:py-24">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-            {/* Left: text content */}
+        <div className="relative page-container pb-14 pt-12 sm:pb-16 sm:pt-16 lg:pb-24 lg:pt-20 xl:pb-28 xl:pt-24">
+          <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-10 xl:gap-14">
             <div>
-              {/* Trust badge */}
-              <div className="inline-flex items-center gap-2 bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-400 rounded-full px-3.5 py-1.5 mb-5 border border-teal-200/60 dark:border-teal-800/40">
-                <Shield className="w-3.5 h-3.5" />
-                <span className="text-xs font-medium">Verified from official sources</span>
+              <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/80 bg-white/75 px-4 py-2 text-xs font-semibold text-slate-600 shadow-sm backdrop-blur dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-300">
+                <ShieldCheck className="h-4 w-4 text-cyan-600 dark:text-cyan-300" />
+                Verified scholarship platform
               </div>
 
-              <h1 className="text-3xl sm:text-4xl lg:text-[2.75rem] font-semibold text-slate-900 dark:text-slate-100 leading-[1.15] mb-5 tracking-tight">
-                Find and compare verified scholarships worldwide
+              <h1 className="max-w-4xl text-4xl font-semibold leading-tight tracking-tight text-slate-950 dark:text-slate-50 sm:text-5xl lg:text-5xl xl:text-6xl">
+                Find verified scholarships for your next academic journey
               </h1>
 
-              <p className="text-base sm:text-lg text-slate-500 dark:text-slate-400 max-w-lg mb-8 leading-relaxed">
-                Clear eligibility criteria, verified deadlines, and step-by-step application guidance
-                for fully funded scholarships across 20+ countries.
+              <p className="mt-6 max-w-2xl text-base leading-8 text-slate-600 dark:text-slate-400 sm:text-lg">
+                Search official scholarship opportunities by country, degree level, funding type,
+                and eligibility - with clear requirements and application guidance.
               </p>
 
-              {/* Search Bar */}
-              <div className="max-w-lg mb-6">
-                <SearchBar size="lg" placeholder="Search by country, university, or keyword…" />
+              <div className="mt-8 max-w-2xl">
+                <SearchBar
+                  size="lg"
+                  placeholder="Search by country, university, scholarship, or keyword..."
+                  className="shadow-2xl shadow-slate-300/30 dark:shadow-slate-950/30"
+                />
               </div>
 
-              {/* CTA buttons */}
-              <div className="flex flex-wrap items-center gap-3 mb-8">
-                <Link href="/scholarships" className="btn-primary">
-                  Browse All Scholarships <ArrowRight className="w-4 h-4" />
+              <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+                <Link href="/scholarships" className="btn-primary rounded-2xl px-6 py-3">
+                  Browse Scholarships <ArrowRight className="h-4 w-4" />
                 </Link>
-                <Link href="/guide" className="btn-secondary">
-                  Read Free Guide
+                <Link href="/guide" className="btn-secondary rounded-2xl px-6 py-3">
+                  Read Application Guide
                 </Link>
               </div>
 
-              {/* Quick stats */}
-              <div className="flex flex-wrap items-center gap-6 text-slate-400 dark:text-slate-500 text-sm">
-                {[
-                  { icon: Globe, label: '20+ Countries' },
-                  { icon: GraduationCap, label: '50+ Scholarships' },
-                  { icon: Users, label: 'Free to use' },
-                ].map(({ icon: Icon, label }) => (
-                  <div key={label} className="flex items-center gap-1.5">
-                    <Icon className="w-4 h-4" />
-                    <span className="font-medium">{label}</span>
-                  </div>
-                ))}
+              <div className="mt-8">
+                <QuickFilterPills />
               </div>
             </div>
 
-            {/* Right: illustration */}
-            <div className="hidden lg:block">
-              <HeroIllustration />
-            </div>
+            <HeroVisual />
           </div>
         </div>
-
-        {/* Subtle bottom border */}
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-slate-200 dark:via-slate-800 to-transparent" />
       </section>
 
-      {/* ═══ TRUST / FEATURES STRIP ══════════════════════════════════════════ */}
+      <TrustFeatureCards />
+
       <section className="page-container py-12 sm:py-16">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {[
-            { icon: ExternalLink, title: 'Official sources', desc: 'Every scholarship links directly to the official programme page — no middlemen.' },
-            { icon: Calendar, title: 'Verified deadlines', desc: 'Deadlines are checked against official sources and marked when estimated.' },
-            { icon: CheckCircle, title: 'Clear eligibility', desc: 'Know exactly what is required — citizenship, GPA, documents — before you apply.' },
-            { icon: BookOpen, title: 'Application guidance', desc: 'Step-by-step process, required documents, selection criteria, and application tips.' },
-          ].map(({ icon: Icon, title, desc }) => (
-            <div key={title} className="group card p-5 hover:shadow-md transition-shadow">
-              <div className="w-10 h-10 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-3 group-hover:bg-teal-50 dark:group-hover:bg-teal-900/20 transition-colors">
-                <Icon className="w-5 h-5 text-slate-500 dark:text-slate-400 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors" />
-              </div>
-              <h3 className="text-sm font-semibold text-slate-800 dark:text-slate-200 mb-1">{title}</h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">{desc}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ═══ HOW IT WORKS ════════════════════════════════════════════════════ */}
-      <section className="bg-slate-50 dark:bg-slate-900/30 border-y border-slate-200 dark:border-slate-800">
-        <div className="page-container py-14 sm:py-18">
-          <div className="text-center mb-10">
-            <h2 className="section-title">How it works</h2>
-            <p className="section-subtitle max-w-lg mx-auto">Three simple steps from search to application</p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-            {[
-              { step: '1', icon: Search, title: 'Search scholarships', desc: 'Browse by country, degree level, funding type, or keyword. Find opportunities that match your profile.' },
-              { step: '2', icon: ClipboardList, title: 'Compare requirements', desc: 'Review eligibility, deadlines, required documents, and application process side by side.' },
-              { step: '3', icon: ExternalLink, title: 'Apply through official source', desc: 'Follow the step-by-step process and apply directly through the official scholarship website.' },
-            ].map(({ step, icon: Icon, title, desc }) => (
-              <div key={step} className="relative text-center">
-                <div className="w-12 h-12 rounded-full bg-slate-800 dark:bg-slate-200 text-white dark:text-slate-900 flex items-center justify-center mx-auto mb-4 text-lg font-semibold">
-                  {step}
-                </div>
-                <div className="w-10 h-10 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center mx-auto mb-3">
-                  <Icon className="w-5 h-5 text-slate-500 dark:text-slate-400" />
-                </div>
-                <h3 className="font-semibold text-slate-800 dark:text-slate-200 mb-1.5">{title}</h3>
-                <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">{desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ═══ FEATURED SCHOLARSHIPS ═══════════════════════════════════════════ */}
-      <section className="page-container py-14 sm:py-18">
-        <div className="flex items-end justify-between mb-8">
+        <div className="mb-8 flex items-end justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2 mb-2">
-              <TrendingUp className="w-4 h-4 text-slate-400" />
-              <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Featured</span>
+            <div className="mb-3 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+              <Sparkles className="h-4 w-4" />
+              Featured
             </div>
-            <h2 className="section-title">Top Scholarships</h2>
-            <p className="section-subtitle">Fully funded opportunities with verified eligibility and deadlines</p>
+            <h2 className="section-title">Top scholarships to explore</h2>
+            <p className="section-subtitle">High-value opportunities with official source links and clear eligibility.</p>
           </div>
-          <Link href="/scholarships" className="hidden sm:flex items-center gap-1.5 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors group">
-            View All <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+          <Link href="/scholarships" className="hidden items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-600 shadow-sm transition-colors hover:text-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:text-white sm:flex">
+            View all <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {featured.map((s, i) => (
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {featured.slice(0, 6).map((s, i) => (
             <ScholarshipCard key={s.id} scholarship={s} className={i >= 3 ? 'hidden lg:block' : ''} />
           ))}
         </div>
-
-        <div className="sm:hidden mt-6 text-center">
-          <Link href="/scholarships" className="btn-primary">
-            View All Scholarships <ArrowRight className="w-4 h-4" />
-          </Link>
-        </div>
       </section>
 
-      {/* ═══ CATEGORIES ══════════════════════════════════════════════════════ */}
-      <section className="bg-slate-50 dark:bg-slate-900/30 border-y border-slate-200 dark:border-slate-800">
-        <div className="page-container py-14 sm:py-18">
-          <div className="text-center mb-10">
-            <h2 className="section-title">Browse by Category</h2>
-            <p className="section-subtitle max-w-xl mx-auto">
-              Explore scholarships by type — government awards, university grants, and foundation programmes
-            </p>
+      <section className="border-y border-slate-200/80 bg-white/70 dark:border-slate-800 dark:bg-slate-900/30">
+        <div className="page-container py-14 sm:py-16">
+          <div className="mb-10 text-center">
+            <h2 className="section-title">How it works</h2>
+            <p className="section-subtitle mx-auto max-w-lg">Move from search to official application with a cleaner workflow.</p>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-            {categories.map(cat => (
-              <CategoryCard key={cat.id} category={cat} />
+          <div className="mx-auto grid max-w-5xl grid-cols-1 gap-5 md:grid-cols-3">
+            {[
+              { step: '1', icon: Search, title: 'Search scholarships', desc: 'Use keywords, country filters, degree level, funding type, and applicant eligibility.' },
+              { step: '2', icon: CheckCircle, title: 'Review requirements', desc: 'Compare deadlines, benefits, documents, country rules, and selection criteria.' },
+              { step: '3', icon: ExternalLink, title: 'Apply officially', desc: 'Open the official source page and follow the verified application process.' },
+            ].map(({ step, icon: Icon, title, desc }) => (
+              <div key={step} className="rounded-3xl border border-slate-200 bg-slate-50/70 p-6 dark:border-slate-800 dark:bg-slate-950/50">
+                <div className="mb-5 flex items-center justify-between">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900">
+                    <Icon className="h-5 w-5" />
+                  </div>
+                  <span className="text-3xl font-semibold text-slate-200 dark:text-slate-800">{step}</span>
+                </div>
+                <h3 className="font-semibold text-slate-900 dark:text-slate-100">{title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-slate-500 dark:text-slate-400">{desc}</p>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ═══ STATS STRIP ═════════════════════════════════════════════════════ */}
-      <section className="page-container py-12 sm:py-16">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-          {[
-            { value: '20+', label: 'Countries', icon: MapPin },
-            { value: '50+', label: 'Scholarships', icon: Award },
-            { value: '100%', label: 'Free to use', icon: Sparkles },
-            { value: '✓', label: 'Verified sources', icon: Shield },
-          ].map(({ value, label, icon: Icon }) => (
-            <div key={label} className="card p-5">
-              <Icon className="w-5 h-5 text-teal-500 dark:text-teal-400 mx-auto mb-2" />
-              <p className="text-2xl font-semibold text-slate-800 dark:text-slate-200">{value}</p>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{label}</p>
-            </div>
+      <section className="page-container py-14 sm:py-16">
+        <div className="mb-10 text-center">
+          <h2 className="section-title">Browse by category</h2>
+          <p className="section-subtitle mx-auto max-w-xl">
+            Explore government awards, university grants, STEM funding, foundation programmes, and regional opportunities.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+          {categories.map((cat) => (
+            <CategoryCard key={cat.id} category={cat} />
           ))}
         </div>
       </section>
 
-      {/* ═══ LATEST SCHOLARSHIPS ═════════════════════════════════════════════ */}
-      <section className="page-container py-12 sm:py-16">
-        <div className="flex items-end justify-between mb-8">
-          <div>
-            <h2 className="section-title">Recently Added</h2>
-            <p className="section-subtitle">The newest verified scholarship listings</p>
-          </div>
-          <Link href="/scholarships" className="hidden sm:flex items-center gap-1.5 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors group">
-            View All <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {latest.map(s => (
-            <ScholarshipCard key={s.id} scholarship={s} />
-          ))}
-        </div>
-      </section>
-
-      {/* ═══ CTA SECTION ═════════════════════════════════════════════════════ */}
-      <section className="page-container pb-16">
-        <div className="rounded-2xl bg-slate-800 dark:bg-slate-900 border border-slate-700 dark:border-slate-800 p-10 sm:p-14">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+      <section className="border-y border-slate-200/80 bg-white/70 dark:border-slate-800 dark:bg-slate-900/30">
+        <div className="page-container py-14 sm:py-16">
+          <div className="mb-8 flex items-end justify-between gap-4">
             <div>
-              <h2 className="text-2xl sm:text-3xl font-semibold text-white mb-3 tracking-tight">
-                Prepare a stronger application
+              <div className="mb-3 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                <Calendar className="h-4 w-4" />
+                Recently added
+              </div>
+              <h2 className="section-title">Fresh scholarship listings</h2>
+              <p className="section-subtitle">Newly added records from the current scholarship dataset.</p>
+            </div>
+            <Link href="/scholarships" className="hidden items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-600 shadow-sm transition-colors hover:text-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:text-white sm:flex">
+              View all <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {latest.map((s) => (
+              <ScholarshipCard key={s.id} scholarship={s} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="page-container py-16">
+        <div className="relative overflow-hidden rounded-[2rem] bg-slate-900 p-8 shadow-2xl shadow-slate-300/30 dark:bg-slate-100 dark:shadow-slate-950/30 sm:p-12">
+          <div className="absolute right-0 top-0 h-44 w-44 rounded-full bg-cyan-400/20 blur-3xl dark:bg-cyan-500/20" />
+          <div className="relative grid grid-cols-1 items-center gap-8 md:grid-cols-[1fr_auto]">
+            <div>
+              <h2 className="text-2xl font-semibold tracking-tight text-white dark:text-slate-950 sm:text-3xl">
+                Prepare a stronger scholarship application
               </h2>
-              <p className="text-slate-400 leading-relaxed">
-                Read our step-by-step guide covering personal statements, recommendation letters,
-                and interview preparation for international scholarships.
+              <p className="mt-3 max-w-2xl leading-relaxed text-slate-300 dark:text-slate-600">
+                Use the EasyScholars guide to plan documents, personal statements, references, and interviews before you apply.
               </p>
             </div>
-            <div className="flex flex-col sm:flex-row md:justify-end gap-3">
-              <Link href="/guide" className="bg-white text-slate-800 hover:bg-slate-100 font-medium rounded-xl px-6 py-3 transition-all inline-flex items-center justify-center gap-2 text-sm">
-                Read Free Guide <ArrowRight className="w-4 h-4" />
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <Link href="/guide" className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-6 py-3 text-sm font-medium text-slate-900 transition-colors hover:bg-slate-100 dark:bg-slate-900 dark:text-white dark:hover:bg-slate-800">
+                Read Application Guide <ArrowRight className="h-4 w-4" />
               </Link>
-              <Link href="/scholarships" className="text-white border border-slate-600 hover:bg-slate-700 font-medium rounded-xl px-6 py-3 transition-all inline-flex items-center justify-center gap-2 text-sm">
+              <Link href="/scholarships" className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/20 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-white/10 dark:border-slate-900/20 dark:text-slate-900 dark:hover:bg-slate-900/10">
                 Browse Scholarships
               </Link>
             </div>
           </div>
         </div>
       </section>
-    </>
+    </div>
   );
 }

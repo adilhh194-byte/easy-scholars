@@ -66,6 +66,9 @@ function ScholarshipsContent() {
               {filters.country && (
                 <FilterChip label={`Country: ${filters.country}`} onRemove={() => setFilters(f => ({ ...f, country: undefined }))} />
               )}
+              {filters.applicantCountry && (
+                <FilterChip label={`Your country: ${filters.applicantCountry}`} onRemove={() => setFilters(f => ({ ...f, applicantCountry: undefined }))} />
+              )}
               {filters.degreeLevel && (
                 <FilterChip label={`Degree: ${filters.degreeLevel}`} onRemove={() => setFilters(f => ({ ...f, degreeLevel: undefined }))} />
               )}

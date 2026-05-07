@@ -43,6 +43,10 @@ The app works fully without Firebase — it uses rich mock data. To connect Fire
 cp .env.example .env.local
 ```
 
+## Data Quality
+
+Scholarship data updates must follow [DATA_RULES.md](./DATA_RULES.md), especially the eligible country sourcing rules.
+
 ## Project Structure
 
 ```
