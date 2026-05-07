@@ -15,6 +15,33 @@ import { Scholarship, ScholarshipFilters, Category, Guide } from '@/types';
 
 const COLLECTION = 'scholarships';
 
+type FirestoreSafeValue =
+  | string
+  | number
+  | boolean
+  | null
+  | FirestoreSafeValue[]
+  | { [key: string]: FirestoreSafeValue };
+
+function removeUndefined<T>(value: T): T {
+  if (Array.isArray(value)) {
+    return value
+      .filter((item) => item !== undefined)
+      .map((item) => removeUndefined(item)) as T;
+  }
+
+  if (value && typeof value === 'object') {
+    return Object.entries(value as Record<string, unknown>).reduce<Record<string, FirestoreSafeValue>>((acc, [key, item]) => {
+      if (item !== undefined) {
+        acc[key] = removeUndefined(item) as FirestoreSafeValue;
+      }
+      return acc;
+    }, {}) as T;
+  }
+
+  return value;
+}
+
 // ─── Scholarships ────────────────────────────────────────────────────────────
 
 export async function getScholarships(filters?: ScholarshipFilters): Promise<Scholarship[]> {
@@ -95,7 +122,7 @@ export async function seedScholarships(): Promise<{ success: boolean; message: s
 
   try {
     for (const scholarship of MOCK_SCHOLARSHIPS) {
-      await setDoc(doc(db, COLLECTION, scholarship.id), scholarship);
+      await setDoc(doc(db, COLLECTION, scholarship.id), removeUndefined(scholarship));
     }
     return { success: true, message: `Successfully seeded ${MOCK_SCHOLARSHIPS.length} scholarships to Firestore.` };
   } catch (e) {
