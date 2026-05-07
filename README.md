@@ -1,107 +1,41 @@
-# EasyScholars — Scholarship Discovery Platform
+# EasyScholars
 
-A production-ready scholarship discovery platform built with **Next.js 14**, **TypeScript**, **Tailwind CSS**, and **Firebase Firestore**. Inspired by Udemy/Coursera's clean layout, but for international scholarships.
+EasyScholars is a scholarship discovery platform designed to help students find, compare, and prepare for international scholarship opportunities with confidence.
 
-## Features
+The website focuses on clear scholarship information: official source links, country eligibility, degree levels, funding type, required documents, application steps, and practical guidance for applicants.
 
-- 🔍 **Search & Filter** — Browse 50+ scholarships by country, degree level, funding type, and deadline
-- 🌍 **Global Coverage** — Scholarships from 20+ countries including UK, USA, Germany, Japan, Korea, and more
-- 🎨 **Dark Mode** — Full dark/light theme toggle
-- 📱 **Responsive** — Mobile-first design with bottom sheet filters
-- 📖 **Guide System** — Step-by-step expandable lessons for scholarship seekers
-- 🔥 **Firebase Ready** — Firestore integration with mock data fallback
-- 🔎 **SEO Optimized** — Dynamic metadata, OG tags, and keyword-rich pages
-- ⚡ **Static Generation** — SSG for scholarship detail pages for maximum performance
+## Purpose
 
-## Getting Started
+Many scholarship listings online are outdated, incomplete, or difficult to compare. EasyScholars brings scholarship information into one clean, searchable interface so students can quickly understand which opportunities may fit their academic goals and applicant profile.
 
-### Prerequisites
+The platform is especially focused on source-backed data. Scholarship records are structured around official programme, government, embassy, university, or scholarship-provider information.
 
-- Node.js 18+ and npm
+## Key Features
 
-### Setup
+- Search scholarships by country, university, scholarship name, or keyword
+- Filter by destination country, applicant country, degree level, funding type, and deadline
+- View country eligibility information where official sources are available
+- Browse featured, recently added, government, university, STEM, foundation, and regional scholarships
+- Open official application and eligibility source links directly from scholarship pages
+- Read application guidance for statements, references, documents, and interviews
+- Use a responsive interface designed for desktop, tablet, and mobile
+- Switch between light and dark mode
 
-```bash
-# Install dependencies
-npm install
+## Technology
 
-# Start development server
-npm run dev
-```
+EasyScholars is built with:
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-### Firebase (Optional)
-
-The app works fully without Firebase — it uses rich mock data. To connect Firestore:
-
-1. Copy `.env.example` to `.env.local`
-2. Fill in your Firebase project credentials
-3. Visit `/admin` (dev mode only) to seed data
-
-```bash
-cp .env.example .env.local
-```
+- TypeScript
+- React
+- Next.js
+- Tailwind CSS
+- Firebase Firestore
+- Lucide React icons
 
 ## Data Quality
 
-Scholarship data updates must follow [DATA_RULES.md](./DATA_RULES.md), especially the eligible country sourcing rules.
+Scholarship data follows documented sourcing rules in [DATA_RULES.md](./DATA_RULES.md). Country eligibility, official links, benefits, deadlines, and application details should be verified from official sources before publishing.
 
-## Project Structure
+## Project Status
 
-```
-src/
-├── app/                    # Next.js App Router pages
-│   ├── page.tsx            # Homepage (hero, featured, categories)
-│   ├── scholarships/       # Listing + detail pages
-│   ├── guide/              # Expandable guide lessons
-│   └── admin/              # Data seeding (dev only)
-├── components/             # Reusable UI components
-│   ├── Navbar.tsx          # Navigation + dark mode toggle
-│   ├── ScholarshipCard.tsx # Scholarship card with badges
-│   ├── FilterSidebar.tsx   # Accordion filters + mobile drawer
-│   └── ...
-├── lib/                    # Data layer
-│   ├── firebase.ts         # Firebase initialization
-│   ├── scholarships.ts     # Queries + mock fallback
-│   └── mock-data.ts        # 50+ sample scholarships
-└── types/                  # TypeScript interfaces
-```
-
-## Scripts
-
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start dev server at localhost:3000 |
-| `npm run build` | Build for production |
-| `npm run start` | Serve production build |
-| `npm run lint` | Run ESLint |
-
-## Deployment
-
-### Vercel (Recommended)
-
-1. Push to GitHub
-2. Import to [Vercel](https://vercel.com)
-3. Add environment variables from `.env.example`
-4. Deploy
-
-### Other Platforms
-
-```bash
-npm run build
-npm run start
-```
-
-## Tech Stack
-
-- [Next.js 14](https://nextjs.org/) — React framework with App Router
-- [TypeScript](https://typescriptlang.org/) — Type safety
-- [Tailwind CSS](https://tailwindcss.com/) — Utility-first styling
-- [Firebase](https://firebase.google.com/) — Firestore database
-- [Lucide React](https://lucide.dev/) — Icon library
-- [next-themes](https://github.com/pacocoursey/next-themes) — Dark mode
-
-## License
-
-MIT
+EasyScholars is an active student-built project focused on making international scholarship discovery clearer, faster, and more reliable.
