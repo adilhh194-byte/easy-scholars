@@ -8,9 +8,11 @@ import {
   orderBy,
   limit,
   setDoc,
+  deleteDoc,
 } from 'firebase/firestore';
-import { db, isFirebaseConfigured } from './firebase';
+import { auth, db, isFirebaseConfigured } from './firebase';
 import { MOCK_SCHOLARSHIPS, MOCK_CATEGORIES, MOCK_GUIDES } from './mock-data';
+import { isAllowedAdminEmail } from './admin-auth';
 import { Scholarship, ScholarshipFilters, Category, Guide } from '@/types';
 
 const COLLECTION = 'scholarships';
@@ -23,7 +25,7 @@ type FirestoreSafeValue =
   | FirestoreSafeValue[]
   | { [key: string]: FirestoreSafeValue };
 
-function removeUndefined<T>(value: T): T {
+export function removeUndefined<T>(value: T): T {
   if (Array.isArray(value)) {
     return value
       .filter((item) => item !== undefined)
@@ -40,6 +42,12 @@ function removeUndefined<T>(value: T): T {
   }
 
   return value;
+}
+
+function assertAdminWriteAccess(): void {
+  if (!isAllowedAdminEmail(auth?.currentUser?.email)) {
+    throw new Error('You are not authorized to write scholarship data.');
+  }
 }
 
 // ─── Scholarships ────────────────────────────────────────────────────────────
@@ -121,6 +129,12 @@ export async function seedScholarships(): Promise<{ success: boolean; message: s
   }
 
   try {
+    assertAdminWriteAccess();
+  } catch (e) {
+    return { success: false, message: String(e instanceof Error ? e.message : e) };
+  }
+
+  try {
     for (const scholarship of MOCK_SCHOLARSHIPS) {
       await setDoc(doc(db, COLLECTION, scholarship.id), removeUndefined(scholarship));
     }
@@ -128,6 +142,34 @@ export async function seedScholarships(): Promise<{ success: boolean; message: s
   } catch (e) {
     return { success: false, message: `Seeding failed: ${e}` };
   }
+}
+
+export async function getAdminScholarships(): Promise<Scholarship[]> {
+  if (!isFirebaseConfigured() || !db) {
+    return MOCK_SCHOLARSHIPS;
+  }
+
+  const ref = collection(db, COLLECTION);
+  const snapshot = await getDocs(query(ref, orderBy('createdAt', 'desc')));
+  return snapshot.docs.map(d => ({ id: d.id, ...d.data() } as Scholarship));
+}
+
+export async function saveScholarship(scholarship: Scholarship): Promise<void> {
+  if (!isFirebaseConfigured() || !db) {
+    throw new Error('Firebase is not configured.');
+  }
+
+  assertAdminWriteAccess();
+  await setDoc(doc(db, COLLECTION, scholarship.id), removeUndefined(scholarship));
+}
+
+export async function deleteScholarship(id: string): Promise<void> {
+  if (!isFirebaseConfigured() || !db) {
+    throw new Error('Firebase is not configured.');
+  }
+
+  assertAdminWriteAccess();
+  await deleteDoc(doc(db, COLLECTION, id));
 }
 
 // ─── Filter helper ────────────────────────────────────────────────────────────
