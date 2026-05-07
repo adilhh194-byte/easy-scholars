@@ -64,6 +64,7 @@ export interface Guide {
 export interface ScholarshipFilters {
   country?: string;
   applicantCountry?: string;
+  category?: string;
   degreeLevel?: DegreeLevel;
   fundingType?: FundingType;
   deadline?: string;

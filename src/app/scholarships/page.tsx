@@ -7,21 +7,38 @@ import SearchBar from '@/components/SearchBar';
 import ScholarshipCard from '@/components/ScholarshipCard';
 import FilterSidebar from '@/components/FilterSidebar';
 import { getScholarships } from '@/lib/scholarships';
-import { Scholarship, ScholarshipFilters } from '@/types';
+import { DegreeLevel, FundingType, Scholarship, ScholarshipFilters } from '@/types';
+
+const DEGREE_LEVELS: DegreeLevel[] = ['Bachelor', 'Master', 'PhD', 'Postdoc', 'Any'];
+const FUNDING_TYPES: FundingType[] = ['Fully Funded', 'Partial', 'Stipend', 'Tuition Only'];
+
+function getFiltersFromSearchParams(searchParams: ReturnType<typeof useSearchParams>): ScholarshipFilters {
+  const degreeLevel = searchParams.get('degreeLevel');
+  const fundingType = searchParams.get('fundingType');
+
+  return {
+    query: searchParams.get('q') || undefined,
+    country: searchParams.get('country') || undefined,
+    category: searchParams.get('category') || undefined,
+    applicantCountry: searchParams.get('applicantCountry') || undefined,
+    degreeLevel: DEGREE_LEVELS.includes(degreeLevel as DegreeLevel) ? degreeLevel as DegreeLevel : undefined,
+    fundingType: FUNDING_TYPES.includes(fundingType as FundingType) ? fundingType as FundingType : undefined,
+    deadline: searchParams.get('deadline') || undefined,
+  };
+}
 
 function ScholarshipsContent() {
   const searchParams = useSearchParams();
-  const queryFromURL = searchParams.get('q') || '';
+  const urlFilters = getFiltersFromSearchParams(searchParams);
+  const queryFromURL = urlFilters.query || '';
 
-  const [filters, setFilters] = useState<ScholarshipFilters>({
-    query: queryFromURL,
-  });
+  const [filters, setFilters] = useState<ScholarshipFilters>(urlFilters);
   const [scholarships, setScholarships] = useState<Scholarship[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setFilters(f => ({ ...f, query: queryFromURL }));
-  }, [queryFromURL]);
+    setFilters(urlFilters);
+  }, [searchParams]);
 
   useEffect(() => {
     const load = async () => {
@@ -65,6 +82,9 @@ function ScholarshipsContent() {
             <div className="flex flex-wrap gap-2 mb-4">
               {filters.country && (
                 <FilterChip label={`Country: ${filters.country}`} onRemove={() => setFilters(f => ({ ...f, country: undefined }))} />
+              )}
+              {filters.category && (
+                <FilterChip label={`Category: ${filters.category}`} onRemove={() => setFilters(f => ({ ...f, category: undefined }))} />
               )}
               {filters.applicantCountry && (
                 <FilterChip label={`Your country: ${filters.applicantCountry}`} onRemove={() => setFilters(f => ({ ...f, applicantCountry: undefined }))} />

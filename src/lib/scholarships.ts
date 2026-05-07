@@ -115,6 +115,7 @@ function applyFilters(scholarships: Scholarship[], filters?: ScholarshipFilters)
       if (!haystack.includes(q)) return false;
     }
     if (filters.country && s.country !== filters.country) return false;
+    if (filters.category && s.category !== filters.category) return false;
     if (filters.applicantCountry && !isEligibleForApplicantCountry(s, filters.applicantCountry)) return false;
     if (filters.degreeLevel && !s.degreeLevel.includes(filters.degreeLevel)) return false;
     if (filters.fundingType && s.fundingType !== filters.fundingType) return false;
