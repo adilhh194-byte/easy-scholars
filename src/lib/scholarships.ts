@@ -50,59 +50,100 @@ function assertAdminWriteAccess(): void {
   }
 }
 
+function shouldUseMockData() {
+  return (
+    !isFirebaseConfigured() ||
+    !db ||
+    process.env.NEXT_PHASE === 'phase-production-build'
+  );
+}
+
+async function withFirestoreReadFallback<T>(read: Promise<T>, fallback: T): Promise<T> {
+  try {
+    return await Promise.race([
+      read,
+      new Promise<T>((resolve) => {
+        setTimeout(() => resolve(fallback), 2500);
+      }),
+    ]);
+  } catch {
+    return fallback;
+  }
+}
+
 // ─── Scholarships ────────────────────────────────────────────────────────────
 
 export async function getScholarships(filters?: ScholarshipFilters): Promise<Scholarship[]> {
-  if (!isFirebaseConfigured() || !db) {
+  const currentDb = db;
+
+  if (shouldUseMockData() || !currentDb) {
     return applyFilters(MOCK_SCHOLARSHIPS, filters);
   }
 
-  try {
-    const ref = collection(db, COLLECTION);
-    const snapshot = await getDocs(query(ref, orderBy('createdAt', 'desc')));
-    const scholarships = snapshot.docs.map(d => ({ id: d.id, ...d.data() } as Scholarship));
-    return applyFilters(scholarships, filters);
-  } catch {
-    return applyFilters(MOCK_SCHOLARSHIPS, filters);
-  }
+  const fallback = applyFilters(MOCK_SCHOLARSHIPS, filters);
+  const ref = collection(currentDb, COLLECTION);
+
+  return withFirestoreReadFallback(
+    getDocs(query(ref, orderBy('createdAt', 'desc'))).then((snapshot) => {
+      const scholarships = snapshot.docs.map(d => ({ id: d.id, ...d.data() } as Scholarship));
+      return applyFilters(scholarships, filters);
+    }),
+    fallback
+  );
 }
 
 export async function getFeaturedScholarships(): Promise<Scholarship[]> {
-  if (!isFirebaseConfigured() || !db) {
-    return MOCK_SCHOLARSHIPS.filter(s => s.featured);
+  const fallback = MOCK_SCHOLARSHIPS.filter(s => s.featured);
+  const currentDb = db;
+
+  if (shouldUseMockData() || !currentDb) {
+    return fallback;
   }
 
-  try {
-    const ref = collection(db, COLLECTION);
-    const q = query(ref, where('featured', '==', true), limit(6));
-    const snapshot = await getDocs(q);
-    return snapshot.docs.map(d => ({ id: d.id, ...d.data() } as Scholarship));
-  } catch {
-    return MOCK_SCHOLARSHIPS.filter(s => s.featured);
-  }
+  const ref = collection(currentDb, COLLECTION);
+  const q = query(ref, where('featured', '==', true), limit(6));
+
+  return withFirestoreReadFallback(
+    getDocs(q).then((snapshot) => snapshot.docs.map(d => ({ id: d.id, ...d.data() } as Scholarship))),
+    fallback
+  );
 }
 
 export async function getScholarshipById(id: string): Promise<Scholarship | null> {
-  if (!isFirebaseConfigured() || !db) {
-    return MOCK_SCHOLARSHIPS.find(s => s.id === id) ?? null;
+  const fallback = MOCK_SCHOLARSHIPS.find(s => s.id === id) ?? null;
+  const currentDb = db;
+
+  if (shouldUseMockData() || !currentDb) {
+    return fallback;
   }
 
-  try {
-    const ref = doc(db, COLLECTION, id);
-    const snap = await getDoc(ref);
-    if (!snap.exists()) return MOCK_SCHOLARSHIPS.find(s => s.id === id) ?? null;
-    return { id: snap.id, ...snap.data() } as Scholarship;
-  } catch {
-    return MOCK_SCHOLARSHIPS.find(s => s.id === id) ?? null;
-  }
+  const ref = doc(currentDb, COLLECTION, id);
+
+  return withFirestoreReadFallback(
+    getDoc(ref).then((snap) => {
+      if (!snap.exists()) return fallback;
+      return { id: snap.id, ...snap.data() } as Scholarship;
+    }),
+    fallback
+  );
 }
 
 export async function getLatestScholarships(count = 6): Promise<Scholarship[]> {
+  if (shouldUseMockData()) {
+    return MOCK_SCHOLARSHIPS.slice(0, count);
+  }
+
   const all = await getScholarships();
   return all.slice(0, count);
 }
 
 export async function getRelatedScholarships(current: Scholarship, count = 3): Promise<Scholarship[]> {
+  if (shouldUseMockData()) {
+    return MOCK_SCHOLARSHIPS
+      .filter(s => s.id !== current.id && (s.country === current.country || s.category === current.category))
+      .slice(0, count);
+  }
+
   const all = await getScholarships();
   return all
     .filter(s => s.id !== current.id && (s.country === current.country || s.category === current.category))
